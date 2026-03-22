@@ -33,7 +33,7 @@ const el = {
   sectionKicker: document.getElementById("sectionKicker"),
   sectionTitle: document.getElementById("sectionTitle"),
   sectionSubtitle: document.getElementById("sectionSubtitle"),
-  menuList: document.getElementById("menuList"),
+  displayColumns: document.getElementById("displayColumns"),
   sandwichesList: document.getElementById("sandwichesList"),
   drinksList: document.getElementById("drinksList"),
   syrupsList: document.getElementById("syrupsList"),
@@ -228,32 +228,52 @@ function getDisplaySections() {
 }
 
 function renderDisplay() {
-  state.sections = getDisplaySections();
   const g = state.data.general;
   el.eyebrowText.textContent = g.eyebrow || "Lincoln, Illinois";
   el.brandTitle.textContent = g.brandTitle || "Market on the Hill";
   el.brandTagline.textContent = g.brandTagline || "";
 
-  if (!state.sections.length) {
-    el.sectionKicker.textContent = "— DISPLAY —";
-    el.sectionTitle.textContent = "Nothing to display";
-    el.sectionSubtitle.textContent = "Enable a section and mark items available in settings.";
-    el.menuList.className = "menu-list layout-cards";
-    el.menuList.innerHTML = `<article class="menu-item empty-card"><div>Use the hidden top-right corner press-and-hold to open settings.</div></article>`;
+  const columns = [];
+  if (g.showPages?.sandwiches) {
+    const items = state.data.sandwiches.filter((item) => item.available);
+    if (items.length) {
+      columns.push(renderSectionPanel("sandwiches", "Sandwiches", "Deli favorites made fresh", items));
+    }
+  }
+  if (g.showPages?.drinks) {
+    const items = state.data.drinks.filter((item) => item.available);
+    if (items.length) {
+      columns.push(renderSectionPanel("drinks", "Drinks", "Cold and quick pairings", items));
+    }
+  }
+  if (g.showPages?.other) {
+    const items = state.data.other.filter((item) => item.available);
+    if (items.length) {
+      columns.push(renderSectionPanel("other", "Sides & Extras", "Add-ons from the deli case", items));
+    }
+  }
+
+  if (!columns.length) {
+    el.displayColumns.innerHTML = `<section class="menu-panel"><div class="empty-card"><div>Use the hidden top-right corner press-and-hold to open settings.</div></div></section>`;
     return;
   }
 
-  if (state.sectionIndex >= state.sections.length) state.sectionIndex = 0;
-  const section = state.sections[state.sectionIndex];
-  if (state.pageIndex >= section.pages.length) state.pageIndex = 0;
-  const page = section.pages[state.pageIndex];
-
-  el.sectionKicker.textContent = section.kicker;
-  el.sectionTitle.textContent = section.title;
-  el.sectionSubtitle.textContent = section.subtitle;
-  el.menuList.className = "menu-list layout-cards";
-  el.menuList.innerHTML = page.map((item) => renderMenuCard(section.key, item)).join("");
+  el.displayColumns.innerHTML = columns.join("");
 }
+
+function renderSectionPanel(type, title, subtitle, items) {
+  const cards = items.map((item) => renderMenuCard(type, item)).join("");
+  return `
+    <section class="menu-panel menu-panel-${type}">
+      <div class="panel-title-wrap">
+        <div class="panel-kicker">Market on the Hill</div>
+        <h2 class="panel-title">${escapeHtml(title)}</h2>
+        <p class="panel-subtitle">${escapeHtml(subtitle)}</p>
+      </div>
+      <div class="menu-list menu-list-${type}">${cards}</div>
+    </section>`;
+}
+
 
 function renderMenuCard(type, item) {
   const meta = buildMeta(type, item);
@@ -282,31 +302,17 @@ function buildMeta(type, item) {
 
 function startRotation() {
   stopRotation();
-  if (state.sections.length <= 1 && (state.sections[0]?.pages.length || 0) <= 1) return;
-  const ms = (state.data.general.rotationSpeedSeconds || 12) * 1000;
-  state.rotationTimer = setInterval(() => rotateNext(), ms);
 }
 
 function rotateNext() {
-  state.sections = getDisplaySections();
-  if (!state.sections.length) return;
-
-  const currentSection = state.sections[state.sectionIndex] || state.sections[0];
-  const pageCount = currentSection.pages.length;
-
-  if (state.pageIndex + 1 < pageCount) {
-    state.pageIndex += 1;
-  } else {
-    state.pageIndex = 0;
-    state.sectionIndex = (state.sectionIndex + 1) % state.sections.length;
-  }
-  renderDisplay();
+  return;
 }
 
 function stopRotation() {
   if (state.rotationTimer) clearInterval(state.rotationTimer);
   state.rotationTimer = null;
 }
+
 
 function renderAdminLists() {
   renderAdminList("sandwiches", el.sandwichesList, state.data.sandwiches);
