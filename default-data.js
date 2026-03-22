@@ -1,15 +1,20 @@
 window.DEFAULT_MENU_DATA = {
   general: {
-    eyebrow: "Lincoln, Illinois",
+    eyebrow: "Mt Pulaski, Illinois",
     brandTitle: "Market on the Hill",
     brandTagline: "Sandwiches, soups, drinks, and deli favorites",
     rotationSpeedSeconds: 12,
-    itemsPerPage: 4,
     showPages: {
       sandwiches: true,
       drinks: true,
       soups: true,
       sides: true
+    },
+    sectionSettings: {
+      sandwiches: { itemsPerPage: 8, order: 1 },
+      drinks: { itemsPerPage: 8, order: 2 },
+      soups: { itemsPerPage: 8, order: 3 },
+      sides: { itemsPerPage: 8, order: 4 }
     }
   },
   sandwiches: [
@@ -19,7 +24,7 @@ window.DEFAULT_MENU_DATA = {
       description: "Roasted turkey, bacon, lettuce, tomato, and mayo.",
       style: "Cold deli favorite",
       options: "White, wheat, or croissant",
-      available: true
+      available: false
     },
     {
       id: "sandwich-ham-swiss",
@@ -27,7 +32,7 @@ window.DEFAULT_MENU_DATA = {
       description: "Black forest ham, Swiss, lettuce, tomato, and deli mustard.",
       style: "Classic cold sandwich",
       options: "White or marble rye",
-      available: true
+      available: false
     },
     {
       id: "sandwich-italian",
@@ -59,6 +64,38 @@ window.DEFAULT_MENU_DATA = {
       description: "Crisp bacon, lettuce, tomato, and mayo.",
       style: "Simple classic",
       options: "White, wheat, or toasted sourdough",
+      available: true
+    },
+    {
+      id: "sandwich-tuna-melt",
+      name: "Tuna Melt",
+      description: "Tuna salad, cheddar, and tomato toasted until warm.",
+      style: "Warm deli favorite",
+      options: "Sourdough or marble rye",
+      available: true
+    },
+    {
+      id: "sandwich-veggie",
+      name: "Garden Veggie",
+      description: "Lettuce, tomato, cucumber, onion, provolone, and herb spread.",
+      style: "Vegetarian option",
+      options: "Wheat, sourdough, or wrap",
+      available: true
+    },
+    {
+      id: "sandwich-ham-turkey-combo",
+      name: "Ham & Turkey Combo",
+      description: "Ham, turkey, Swiss, lettuce, tomato, and mayo.",
+      style: "Deli combo",
+      options: "White, wheat, or croissant",
+      available: true
+    },
+    {
+      id: "sandwich-meatball-sub",
+      name: "Meatball Sub",
+      description: "Meatballs, marinara, and melted provolone served hot.",
+      style: "Hot sandwich",
+      options: "Toasted hoagie roll",
       available: true
     }
   ],
@@ -94,6 +131,54 @@ window.DEFAULT_MENU_DATA = {
       style: "Hot beverages",
       options: "Regular or decaf",
       available: true
+    },
+    {
+      id: "drink-cold-brew",
+      name: "Cold Brew Coffee",
+      description: "Smooth chilled coffee poured over ice.",
+      style: "Coffee bar",
+      options: "Black, vanilla, or mocha",
+      available: true
+    },
+    {
+      id: "drink-hot-tea",
+      name: "Hot Tea",
+      description: "Assorted tea bags with hot water available at the counter.",
+      style: "Hot beverages",
+      options: "Black, green, or herbal",
+      available: true
+    },
+    {
+      id: "drink-bottled-water",
+      name: "Bottled Water",
+      description: "Grab-and-go chilled bottled water.",
+      style: "Cooler staple",
+      options: "Single bottle",
+      available: true
+    },
+    {
+      id: "drink-orange-juice",
+      name: "Orange Juice",
+      description: "Chilled orange juice ready to grab from the cooler.",
+      style: "Breakfast favorite",
+      options: "Small bottle",
+      available: true
+    },
+    {
+      id: "drink-chocolate-milk",
+      name: "Chocolate Milk",
+      description: "Cold bottled chocolate milk from the deli cooler.",
+      style: "Kid favorite",
+      options: "Single bottle",
+      available: false
+    },
+    {
+      id: "drink-sparkling-water",
+      name: "Sparkling Water",
+      description: "Refreshing canned sparkling water with rotating flavors.",
+      style: "Light refreshment",
+      options: "Lemon, lime, or berry",
+      available: false
     }
   ],
   soups: [
@@ -128,6 +213,54 @@ window.DEFAULT_MENU_DATA = {
       style: "House favorite",
       options: "Cup, bowl, or add crackers",
       available: true
+    },
+    {
+      id: "soup-tomato-basil",
+      name: "Tomato Basil",
+      description: "Rich tomato soup finished with basil and cream.",
+      style: "Comfort classic",
+      options: "Cup or bowl",
+      available: true
+    },
+    {
+      id: "soup-vegetable-beef",
+      name: "Vegetable Beef",
+      description: "Savory beef broth with vegetables and tender beef.",
+      style: "Hearty soup",
+      options: "Cup or bowl",
+      available: true
+    },
+    {
+      id: "soup-clam-chowder",
+      name: "Clam Chowder",
+      description: "Creamy chowder with potatoes and clam flavor.",
+      style: "Creamy soup",
+      options: "Cup or bowl",
+      available: true
+    },
+    {
+      id: "soup-minestrone",
+      name: "Minestrone",
+      description: "Tomato broth with pasta, beans, and vegetables.",
+      style: "Vegetarian soup",
+      options: "Cup or bowl",
+      available: true
+    },
+    {
+      id: "soup-chicken-dumpling",
+      name: "Chicken & Dumpling",
+      description: "Thick comforting soup with chicken and soft dumplings.",
+      style: "Homestyle soup",
+      options: "Cup or bowl",
+      available: false
+    },
+    {
+      id: "soup-taco",
+      name: "Taco Soup",
+      description: "Tomato-based soup with beef, beans, and southwest flavor.",
+      style: "Rotating special",
+      options: "Cup or bowl",
+      available: false
     }
   ],
   sides: [
@@ -161,6 +294,54 @@ window.DEFAULT_MENU_DATA = {
       description: "Large fresh-baked cookies near the register.",
       style: "Sweet extra",
       options: "Chocolate chip, sugar, or oatmeal raisin",
+      available: true
+    },
+    {
+      id: "side-coleslaw",
+      name: "Coleslaw",
+      description: "Creamy deli-style coleslaw served chilled.",
+      style: "Classic side",
+      options: "Small or regular",
+      available: true
+    },
+    {
+      id: "side-macaroni-salad",
+      name: "Macaroni Salad",
+      description: "Traditional macaroni salad with a creamy dressing.",
+      style: "Chilled side",
+      options: "Small or regular",
+      available: true
+    },
+    {
+      id: "side-fruit-cup",
+      name: "Fresh Fruit Cup",
+      description: "Seasonal mixed fruit ready to grab from the cooler.",
+      style: "Fresh side",
+      options: "Single cup",
+      available: true
+    },
+    {
+      id: "side-pickle-spears",
+      name: "Pickle Spears",
+      description: "Crisp dill pickle spears packed cold.",
+      style: "Deli add-on",
+      options: "Single or double spear",
+      available: true
+    },
+    {
+      id: "side-brownie",
+      name: "Fudge Brownie",
+      description: "Rich bakery brownie wrapped for grab-and-go.",
+      style: "Sweet extra",
+      options: "Single brownie",
+      available: true
+    },
+    {
+      id: "side-kettle-corn",
+      name: "Kettle Corn",
+      description: "Sweet and salty snack bag near checkout.",
+      style: "Packaged snack",
+      options: "Single bag",
       available: true
     }
   ]

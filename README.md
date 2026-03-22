@@ -15,6 +15,14 @@ Public-facing rotating menu demo for Market on the Hill.
 - The display rotates through enabled sections and paged items based on local settings.
 - Settings remain device-local through browser storage.
 
-## Layout fix
+## Live Demo
+- https://jstiner.github.io/MarketOnTheHill/
 
-- Forced base menu grid to 3 columns on tablet/default layouts so layout helper classes cannot fall back to 4 columns.
+## Notes
+- Default eyebrow/location updated to Mt Pulaski, Illinois.
+- Each section now has its own items-per-panel setting and display order.
+
+
+## Logo path fix
+- Header logo now uses `/MarketOnTheHill/assets/market-on-the-hill-logo.svg?v=3` with a relative-path fallback.
+- Removed old `assets/logo.png` and `assets/logo.webp` files to prevent confusion.
