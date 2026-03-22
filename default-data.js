@@ -1,15 +1,20 @@
 window.DEFAULT_MENU_DATA = {
   general: {
-    eyebrow: "Lincoln, Illinois",
+    eyebrow: "Mt Pulaski, Illinois",
     brandTitle: "Market on the Hill",
     brandTagline: "Sandwiches, soups, drinks, and deli favorites",
     rotationSpeedSeconds: 12,
-    itemsPerPage: 8,
     showPages: {
       sandwiches: true,
       drinks: true,
       soups: true,
       sides: true
+    },
+    sectionSettings: {
+      sandwiches: { itemsPerPage: 8, order: 1 },
+      drinks: { itemsPerPage: 8, order: 2 },
+      soups: { itemsPerPage: 8, order: 3 },
+      sides: { itemsPerPage: 8, order: 4 }
     }
   },
   sandwiches: [
@@ -19,7 +24,7 @@ window.DEFAULT_MENU_DATA = {
       description: "Roasted turkey, bacon, lettuce, tomato, and mayo.",
       style: "Cold deli favorite",
       options: "White, wheat, or croissant",
-      available: true
+      available: false
     },
     {
       id: "sandwich-ham-swiss",
@@ -27,7 +32,7 @@ window.DEFAULT_MENU_DATA = {
       description: "Black forest ham, Swiss, lettuce, tomato, and deli mustard.",
       style: "Classic cold sandwich",
       options: "White or marble rye",
-      available: true
+      available: false
     },
     {
       id: "sandwich-italian",
@@ -165,7 +170,7 @@ window.DEFAULT_MENU_DATA = {
       description: "Cold bottled chocolate milk from the deli cooler.",
       style: "Kid favorite",
       options: "Single bottle",
-      available: true
+      available: false
     },
     {
       id: "drink-sparkling-water",
@@ -173,7 +178,7 @@ window.DEFAULT_MENU_DATA = {
       description: "Refreshing canned sparkling water with rotating flavors.",
       style: "Light refreshment",
       options: "Lemon, lime, or berry",
-      available: true
+      available: false
     }
   ],
   soups: [
@@ -247,7 +252,7 @@ window.DEFAULT_MENU_DATA = {
       description: "Thick comforting soup with chicken and soft dumplings.",
       style: "Homestyle soup",
       options: "Cup or bowl",
-      available: true
+      available: false
     },
     {
       id: "soup-taco",
@@ -255,7 +260,7 @@ window.DEFAULT_MENU_DATA = {
       description: "Tomato-based soup with beef, beans, and southwest flavor.",
       style: "Rotating special",
       options: "Cup or bowl",
-      available: true
+      available: false
     }
   ],
   sides: [
