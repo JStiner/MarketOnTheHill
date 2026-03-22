@@ -19,7 +19,11 @@
       </div>
 
       <div class="brand-center">
-        <img src="/MarketOnTheHill/assets/market-on-the-hill-logo.svg?v=3" onerror="this.onerror=null;this.src='./assets/market-on-the-hill-logo.svg?v=3';" alt="Market on the Hill logo" class="brand-logo" />
+     <img
+  src="/MarketOnTheHill/assets/market-on-the-hill-logo.png?v=1"
+  alt="Market on the Hill logo"
+  class="brand-logo"
+/>
         <div class="brand-copy">
           <div class="eyebrow" id="eyebrowText">Mt Pulaski, Illinois</div>
           <h1 id="brandTitle">Market on the Hill</h1>
@@ -88,10 +92,19 @@
               <span>Rotation speed (seconds)</span>
               <input id="rotationSpeedInput" type="number" min="5" max="120" step="1" />
             </label>
+            <label>
+              <span>Word size</span>
+              <select id="fontScaleInput">
+                <option value="small">Smaller</option>
+                <option value="normal">Default</option>
+                <option value="large">Larger</option>
+              </select>
+            </label>
           </div>
 
           <div class="switch-block">
             <h3>Section display settings</h3>
+            <p class="settings-note">Recommended maximum: 12 items per panel.</p>
 
             <div class="section-settings-grid">
               <div class="section-settings-head">Section</div>

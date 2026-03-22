@@ -4,6 +4,7 @@ window.DEFAULT_MENU_DATA = {
     brandTitle: "Market on the Hill",
     brandTagline: "Sandwiches, soups, drinks, and deli favorites",
     rotationSpeedSeconds: 12,
+    fontScale: "normal",
     showPages: {
       sandwiches: true,
       drinks: true,
@@ -11,10 +12,10 @@ window.DEFAULT_MENU_DATA = {
       sides: true
     },
     sectionSettings: {
-      sandwiches: { itemsPerPage: 8, order: 1 },
-      drinks: { itemsPerPage: 8, order: 2 },
-      soups: { itemsPerPage: 8, order: 3 },
-      sides: { itemsPerPage: 8, order: 4 }
+      drinks: { itemsPerPage: 12, order: 1 },
+      sandwiches: { itemsPerPage: 12, order: 2 },
+      soups: { itemsPerPage: 12, order: 3 },
+      sides: { itemsPerPage: 12, order: 4 }
     }
   },
   sandwiches: [
@@ -24,7 +25,7 @@ window.DEFAULT_MENU_DATA = {
       description: "Roasted turkey, bacon, lettuce, tomato, and mayo.",
       style: "Cold deli favorite",
       options: "White, wheat, or croissant",
-      available: false
+      available: true
     },
     {
       id: "sandwich-ham-swiss",
@@ -32,7 +33,7 @@ window.DEFAULT_MENU_DATA = {
       description: "Black forest ham, Swiss, lettuce, tomato, and deli mustard.",
       style: "Classic cold sandwich",
       options: "White or marble rye",
-      available: false
+      available: true
     },
     {
       id: "sandwich-italian",
@@ -170,7 +171,7 @@ window.DEFAULT_MENU_DATA = {
       description: "Cold bottled chocolate milk from the deli cooler.",
       style: "Kid favorite",
       options: "Single bottle",
-      available: false
+      available: true
     },
     {
       id: "drink-sparkling-water",
@@ -178,7 +179,7 @@ window.DEFAULT_MENU_DATA = {
       description: "Refreshing canned sparkling water with rotating flavors.",
       style: "Light refreshment",
       options: "Lemon, lime, or berry",
-      available: false
+      available: true
     }
   ],
   soups: [
@@ -252,7 +253,7 @@ window.DEFAULT_MENU_DATA = {
       description: "Thick comforting soup with chicken and soft dumplings.",
       style: "Homestyle soup",
       options: "Cup or bowl",
-      available: false
+      available: true
     },
     {
       id: "soup-taco",
@@ -260,7 +261,7 @@ window.DEFAULT_MENU_DATA = {
       description: "Tomato-based soup with beef, beans, and southwest flavor.",
       style: "Rotating special",
       options: "Cup or bowl",
-      available: false
+      available: true
     }
   ],
   sides: [
