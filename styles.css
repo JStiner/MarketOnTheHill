@@ -181,7 +181,7 @@ label span {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 .menu-list.layout-cards.layout-4 {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 .menu-item {
   border-radius: 18px;
@@ -485,7 +485,7 @@ label span {
 
 @media (orientation: landscape) and (max-height: 700px) {
   .menu-list.layout-cards.layout-4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
   .menu-list.layout-cards.layout-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));

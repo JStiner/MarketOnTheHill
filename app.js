@@ -292,7 +292,7 @@ function renderDisplay() {
     el.sectionKicker.textContent = "— DISPLAY —";
     el.sectionTitle.textContent = "Nothing to display";
     el.sectionSubtitle.textContent = "Enable a section and mark items available in settings.";
-    el.menuList.className = "menu-list layout-cards layout-4";
+    el.menuList.className = "menu-list layout-cards layout-3";
     el.menuList.innerHTML = `<article class="menu-item empty-card"><div>Use the small settings button in the top-right corner to open admin controls.</div></article>`;
     return;
   }
@@ -313,7 +313,7 @@ function layoutClassForSection(itemsPerPage) {
   if (itemsPerPage <= 1) return "layout-1";
   if (itemsPerPage <= 4) return "layout-2";
   if (itemsPerPage <= 6) return "layout-3";
-  return "layout-4";
+  return "layout-3";
 }
 
 function renderMenuCard(item) {
