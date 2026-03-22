@@ -11,6 +11,15 @@ window.DEFAULT_MENU_DATA = {
       soups: true,
       sides: true
     },
+    hoursOpen: {
+      monday: { enabled: true, open: "10:00", close: "18:00" },
+      tuesday: { enabled: true, open: "10:00", close: "18:00" },
+      wednesday: { enabled: true, open: "10:00", close: "18:00" },
+      thursday: { enabled: true, open: "10:00", close: "18:00" },
+      friday: { enabled: true, open: "10:00", close: "18:00" },
+      saturday: { enabled: true, open: "10:00", close: "18:00" },
+      sunday: { enabled: true, open: "10:00", close: "14:00" }
+    },
     sectionSettings: {
       drinks: { itemsPerPage: 12, order: 1 },
       sandwiches: { itemsPerPage: 12, order: 2 },

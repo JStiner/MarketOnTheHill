@@ -23,6 +23,7 @@ const el = {
   brandTaglineInput: document.getElementById("brandTaglineInput"),
   rotationSpeedInput: document.getElementById("rotationSpeedInput"),
   fontScaleInput: document.getElementById("fontScaleInput"),
+  headerHours: document.getElementById("headerHours"),
   showSandwichesToggle: document.getElementById("showSandwichesToggle"),
   showDrinksToggle: document.getElementById("showDrinksToggle"),
   showSoupsToggle: document.getElementById("showSoupsToggle"),
@@ -35,6 +36,27 @@ const el = {
   drinksOrderInput: document.getElementById("drinksOrderInput"),
   soupsOrderInput: document.getElementById("soupsOrderInput"),
   sidesOrderInput: document.getElementById("sidesOrderInput"),
+  hoursMondayEnabled: document.getElementById("hoursMondayEnabled"),
+  hoursMondayOpen: document.getElementById("hoursMondayOpen"),
+  hoursMondayClose: document.getElementById("hoursMondayClose"),
+  hoursTuesdayEnabled: document.getElementById("hoursTuesdayEnabled"),
+  hoursTuesdayOpen: document.getElementById("hoursTuesdayOpen"),
+  hoursTuesdayClose: document.getElementById("hoursTuesdayClose"),
+  hoursWednesdayEnabled: document.getElementById("hoursWednesdayEnabled"),
+  hoursWednesdayOpen: document.getElementById("hoursWednesdayOpen"),
+  hoursWednesdayClose: document.getElementById("hoursWednesdayClose"),
+  hoursThursdayEnabled: document.getElementById("hoursThursdayEnabled"),
+  hoursThursdayOpen: document.getElementById("hoursThursdayOpen"),
+  hoursThursdayClose: document.getElementById("hoursThursdayClose"),
+  hoursFridayEnabled: document.getElementById("hoursFridayEnabled"),
+  hoursFridayOpen: document.getElementById("hoursFridayOpen"),
+  hoursFridayClose: document.getElementById("hoursFridayClose"),
+  hoursSaturdayEnabled: document.getElementById("hoursSaturdayEnabled"),
+  hoursSaturdayOpen: document.getElementById("hoursSaturdayOpen"),
+  hoursSaturdayClose: document.getElementById("hoursSaturdayClose"),
+  hoursSundayEnabled: document.getElementById("hoursSundayEnabled"),
+  hoursSundayOpen: document.getElementById("hoursSundayOpen"),
+  hoursSundayClose: document.getElementById("hoursSundayClose"),
   eyebrowText: document.getElementById("eyebrowText"),
   brandTitle: document.getElementById("brandTitle"),
   brandTagline: document.getElementById("brandTagline"),
@@ -170,6 +192,9 @@ function populateGeneralForm() {
   el.drinksOrderInput.value = sectionSettings.drinks.order;
   el.soupsOrderInput.value = sectionSettings.soups.order;
   el.sidesOrderInput.value = sectionSettings.sides.order;
+
+  const hours = normalizeHours(g.hoursOpen || {});
+  setHoursFormValues(hours);
 }
 
 function saveGeneralSettings() {
@@ -202,6 +227,7 @@ function saveGeneralSettings() {
       order: clampNumber(el.sidesOrderInput.value, 1, 4, 4)
     }
   });
+  state.data.general.hoursOpen = readHoursFormValues();
 
   saveData();
   state.sectionIndex = 0;
@@ -285,6 +311,7 @@ function renderDisplay() {
   el.eyebrowText.textContent = g.eyebrow || "Mt Pulaski, Illinois";
   el.brandTitle.textContent = g.brandTitle || "Market on the Hill";
   el.brandTagline.textContent = g.brandTagline || "";
+  renderHeaderHours();
   document.body.classList.remove("font-small", "font-normal", "font-large");
   document.body.classList.add(`font-${g.fontScale || "normal"}`);
 
@@ -499,6 +526,10 @@ function mergeDefaults(data, defaults) {
       sectionSettings: normalizeSectionSettings({
         ...(defaults.general.sectionSettings || {}),
         ...(data.general?.sectionSettings || {})
+      }),
+      hoursOpen: normalizeHours({
+        ...(defaults.general.hoursOpen || {}),
+        ...(data.general?.hoursOpen || {})
       })
     },
     sandwiches: Array.isArray(data.sandwiches) ? data.sandwiches : clone(defaults.sandwiches),
@@ -506,6 +537,94 @@ function mergeDefaults(data, defaults) {
     soups: Array.isArray(data.soups) ? data.soups : clone(defaults.soups),
     sides: Array.isArray(data.sides) ? data.sides : clone(defaults.sides)
   };
+}
+
+function normalizeHours(hours) {
+  const defaults = {
+    monday: { enabled: true, open: "10:00", close: "18:00" },
+    tuesday: { enabled: true, open: "10:00", close: "18:00" },
+    wednesday: { enabled: true, open: "10:00", close: "18:00" },
+    thursday: { enabled: true, open: "10:00", close: "18:00" },
+    friday: { enabled: true, open: "10:00", close: "18:00" },
+    saturday: { enabled: true, open: "10:00", close: "18:00" },
+    sunday: { enabled: true, open: "10:00", close: "14:00" }
+  };
+
+  const normalized = {};
+  Object.entries(defaults).forEach(([day, value]) => {
+    const incoming = hours?.[day] || {};
+    normalized[day] = {
+      enabled: typeof incoming.enabled === "boolean" ? incoming.enabled : value.enabled,
+      open: normalizeTimeValue(incoming.open || value.open, value.open),
+      close: normalizeTimeValue(incoming.close || value.close, value.close)
+    };
+  });
+  return normalized;
+}
+
+function normalizeTimeValue(value, fallback) {
+  return /^([01]\d|2[0-3]):[0-5]\d$/.test(String(value || "")) ? String(value) : fallback;
+}
+
+function setHoursFormValues(hours) {
+  ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"].forEach((day) => {
+    const proper = capitalize(day);
+    el[`hours${proper}Enabled`].checked = !!hours[day].enabled;
+    el[`hours${proper}Open`].value = hours[day].open;
+    el[`hours${proper}Close`].value = hours[day].close;
+  });
+}
+
+function readHoursFormValues() {
+  const hours = {};
+  ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"].forEach((day) => {
+    const proper = capitalize(day);
+    hours[day] = {
+      enabled: !!el[`hours${proper}Enabled`].checked,
+      open: normalizeTimeValue(el[`hours${proper}Open`].value, day === "sunday" ? "10:00" : "10:00"),
+      close: normalizeTimeValue(el[`hours${proper}Close`].value, day === "sunday" ? "14:00" : "18:00")
+    };
+  });
+  return normalizeHours(hours);
+}
+
+function renderHeaderHours() {
+  const hours = normalizeHours(state.data.general.hoursOpen || {});
+  const columnOneDays = ["monday", "tuesday", "wednesday", "thursday"];
+  const columnTwoDays = ["friday", "saturday", "sunday"];
+  const columnOne = columnOneDays.filter((day) => hours[day].enabled);
+  const columnTwo = columnTwoDays.filter((day) => hours[day].enabled);
+
+  const renderColumn = (title, days) => {
+    if (!days.length) return "";
+    return `
+      <div class="hours-display-column">
+        <div class="hours-display-title">${title}</div>
+        ${days.map((day) => `
+          <div class="hours-display-row">
+            <span class="hours-display-day">${capitalize(day)}</span>
+            <span class="hours-display-time">${formatDisplayTime(hours[day].open)} - ${formatDisplayTime(hours[day].close)}</span>
+          </div>
+        `).join("")}
+      </div>`;
+  };
+
+  const markup = [renderColumn("Weekdays", columnOne), renderColumn("Weekend", columnTwo)].join("");
+  el.headerHours.innerHTML = markup || '<div class="hours-display-empty">Set hours in settings</div>';
+}
+
+function formatDisplayTime(value) {
+  const [hourText, minuteText] = String(value).split(":");
+  const hour = Number(hourText);
+  const minute = Number(minuteText);
+  if (Number.isNaN(hour) || Number.isNaN(minute)) return value;
+  const suffix = hour >= 12 ? "pm" : "am";
+  const displayHour = hour % 12 || 12;
+  return minute === 0 ? `${displayHour}${suffix}` : `${displayHour}:${String(minute).padStart(2, "0")}${suffix}`;
+}
+
+function capitalize(value) {
+  return String(value).charAt(0).toUpperCase() + String(value).slice(1);
 }
 
 function labelForType(type) {

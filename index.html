@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <button id="settingsHotspot" class="settings-hotspot" aria-label="Open settings" title="Settings">⚙</button>
+  <button id="settingsHotspot" class="settings-hotspot" aria-label="Open settings" title="Settings"></button>
 
   <div class="screen-shell">
     <header class="brand-header">
@@ -31,11 +31,7 @@
         </div>
       </div>
 
-      <div class="header-side-dots" aria-hidden="true">
-        <span class="dot dot-light"></span>
-        <span class="dot dot-gold"></span>
-        <span class="dot dot-light"></span>
-      </div>
+      <div class="header-hours" id="headerHours" aria-label="Store hours"></div>
     </header>
 
     <main class="display-main">
@@ -131,6 +127,56 @@
               <div><input id="showSidesToggle" type="checkbox" /></div>
               <div><input id="sidesItemsPerPageInput" type="number" min="1" max="18" step="1" /></div>
               <div><input id="sidesOrderInput" type="number" min="1" max="4" step="1" /></div>
+            </div>
+          </div>
+
+          <div class="hours-block">
+            <h3>Hours open</h3>
+            <div class="hours-settings-grid">
+              <div class="hours-settings-column">
+                <div class="hours-settings-column-title">Weekdays</div>
+
+                <div class="hours-row">
+                  <label class="hours-day"><input id="hoursMondayEnabled" type="checkbox" /> <span>Monday</span></label>
+                  <input id="hoursMondayOpen" type="time" />
+                  <input id="hoursMondayClose" type="time" />
+                </div>
+                <div class="hours-row">
+                  <label class="hours-day"><input id="hoursTuesdayEnabled" type="checkbox" /> <span>Tuesday</span></label>
+                  <input id="hoursTuesdayOpen" type="time" />
+                  <input id="hoursTuesdayClose" type="time" />
+                </div>
+                <div class="hours-row">
+                  <label class="hours-day"><input id="hoursWednesdayEnabled" type="checkbox" /> <span>Wednesday</span></label>
+                  <input id="hoursWednesdayOpen" type="time" />
+                  <input id="hoursWednesdayClose" type="time" />
+                </div>
+                <div class="hours-row">
+                  <label class="hours-day"><input id="hoursThursdayEnabled" type="checkbox" /> <span>Thursday</span></label>
+                  <input id="hoursThursdayOpen" type="time" />
+                  <input id="hoursThursdayClose" type="time" />
+                </div>
+              </div>
+
+              <div class="hours-settings-column">
+                <div class="hours-settings-column-title">Weekend</div>
+
+                <div class="hours-row">
+                  <label class="hours-day"><input id="hoursFridayEnabled" type="checkbox" /> <span>Friday</span></label>
+                  <input id="hoursFridayOpen" type="time" />
+                  <input id="hoursFridayClose" type="time" />
+                </div>
+                <div class="hours-row">
+                  <label class="hours-day"><input id="hoursSaturdayEnabled" type="checkbox" /> <span>Saturday</span></label>
+                  <input id="hoursSaturdayOpen" type="time" />
+                  <input id="hoursSaturdayClose" type="time" />
+                </div>
+                <div class="hours-row">
+                  <label class="hours-day"><input id="hoursSundayEnabled" type="checkbox" /> <span>Sunday</span></label>
+                  <input id="hoursSundayOpen" type="time" />
+                  <input id="hoursSundayClose" type="time" />
+                </div>
+              </div>
             </div>
           </div>
 
