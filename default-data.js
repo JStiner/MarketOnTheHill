@@ -12,8 +12,8 @@ window.DEFAULT_MENU_DATA = {
       sides: true
     },
     sectionSettings: {
-      sandwiches: { itemsPerPage: 12, order: 1 },
-      drinks: { itemsPerPage: 12, order: 2 },
+      drinks: { itemsPerPage: 12, order: 1 },
+      sandwiches: { itemsPerPage: 12, order: 2 },
       soups: { itemsPerPage: 12, order: 3 },
       sides: { itemsPerPage: 12, order: 4 }
     }
