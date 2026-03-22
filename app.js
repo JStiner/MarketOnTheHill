@@ -599,7 +599,7 @@ function renderHeaderHours() {
     if (!days.length) return "";
     return `
       <div class="hours-display-column">
-        <div class="hours-display-title">${title}</div>:""
+        <div class="hours-display-title">${title}</div>
         ${days.map((day) => `
           <div class="hours-display-row">
             <span class="hours-display-day">${capitalize(day)}</span>
