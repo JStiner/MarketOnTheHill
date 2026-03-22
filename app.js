@@ -609,7 +609,7 @@ function renderHeaderHours() {
       </div>`;
   };
 
-  const markup = [renderColumn("Weekdays", columnOne), renderColumn("Weekend", columnTwo)].join("");
+  const markup = [renderColumn("Hours Open", columnOne), renderColumn("", columnTwo)].join("");
   el.headerHours.innerHTML = markup || '<div class="hours-display-empty">Set hours in settings</div>';
 }
 
