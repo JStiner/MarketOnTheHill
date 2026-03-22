@@ -22,19 +22,11 @@ const el = {
   brandTitleInput: document.getElementById("brandTitleInput"),
   brandTaglineInput: document.getElementById("brandTaglineInput"),
   rotationSpeedInput: document.getElementById("rotationSpeedInput"),
-  fontScaleInput: document.getElementById("fontScaleInput"),
+  itemsPerPageInput: document.getElementById("itemsPerPageInput"),
   showSandwichesToggle: document.getElementById("showSandwichesToggle"),
   showDrinksToggle: document.getElementById("showDrinksToggle"),
   showSoupsToggle: document.getElementById("showSoupsToggle"),
   showSidesToggle: document.getElementById("showSidesToggle"),
-  sandwichesItemsPerPageInput: document.getElementById("sandwichesItemsPerPageInput"),
-  drinksItemsPerPageInput: document.getElementById("drinksItemsPerPageInput"),
-  soupsItemsPerPageInput: document.getElementById("soupsItemsPerPageInput"),
-  sidesItemsPerPageInput: document.getElementById("sidesItemsPerPageInput"),
-  sandwichesOrderInput: document.getElementById("sandwichesOrderInput"),
-  drinksOrderInput: document.getElementById("drinksOrderInput"),
-  soupsOrderInput: document.getElementById("soupsOrderInput"),
-  sidesOrderInput: document.getElementById("sidesOrderInput"),
   eyebrowText: document.getElementById("eyebrowText"),
   brandTitle: document.getElementById("brandTitle"),
   brandTagline: document.getElementById("brandTagline"),
@@ -138,71 +130,35 @@ function closeSettings() {
 }
 
 function openTab(name) {
-  document.querySelectorAll(".tab-btn").forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.tab === name);
-  });
-  document.querySelectorAll(".tab-panel").forEach((panel) => {
-    panel.classList.toggle("active", panel.dataset.panel === name);
-  });
+  document.querySelectorAll(".tab-btn").forEach((tab) => tab.classList.toggle("active", tab.dataset.tab === name));
+  document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.toggle("active", panel.dataset.panel === name));
 }
 
 function populateGeneralForm() {
   const g = state.data.general;
-  const sectionSettings = getSectionSettings();
-
   el.eyebrowInput.value = g.eyebrow || "";
   el.brandTitleInput.value = g.brandTitle || "";
   el.brandTaglineInput.value = g.brandTagline || "";
   el.rotationSpeedInput.value = g.rotationSpeedSeconds || 12;
-  el.fontScaleInput.value = g.fontScale || "normal";
-
+  el.itemsPerPageInput.value = g.itemsPerPage || 4;
   el.showSandwichesToggle.checked = !!g.showPages.sandwiches;
   el.showDrinksToggle.checked = !!g.showPages.drinks;
   el.showSoupsToggle.checked = !!g.showPages.soups;
   el.showSidesToggle.checked = !!g.showPages.sides;
-
-  el.sandwichesItemsPerPageInput.value = sectionSettings.sandwiches.itemsPerPage;
-  el.drinksItemsPerPageInput.value = sectionSettings.drinks.itemsPerPage;
-  el.soupsItemsPerPageInput.value = sectionSettings.soups.itemsPerPage;
-  el.sidesItemsPerPageInput.value = sectionSettings.sides.itemsPerPage;
-
-  el.sandwichesOrderInput.value = sectionSettings.sandwiches.order;
-  el.drinksOrderInput.value = sectionSettings.drinks.order;
-  el.soupsOrderInput.value = sectionSettings.soups.order;
-  el.sidesOrderInput.value = sectionSettings.sides.order;
 }
 
 function saveGeneralSettings() {
-  state.data.general.eyebrow = el.eyebrowInput.value.trim() || "Mt Pulaski, Illinois";
+  state.data.general.eyebrow = el.eyebrowInput.value.trim() || "Lincoln, Illinois";
   state.data.general.brandTitle = el.brandTitleInput.value.trim() || "Market on the Hill";
   state.data.general.brandTagline = el.brandTaglineInput.value.trim() || "Sandwiches, soups, drinks, and deli favorites";
   state.data.general.rotationSpeedSeconds = clampNumber(el.rotationSpeedInput.value, 5, 120, 12);
-  state.data.general.fontScale = ["small","normal","large"].includes(el.fontScaleInput.value) ? el.fontScaleInput.value : "normal";
+  state.data.general.itemsPerPage = clampNumber(el.itemsPerPageInput.value, 3, 18, 4);
   state.data.general.showPages = {
     sandwiches: el.showSandwichesToggle.checked,
     drinks: el.showDrinksToggle.checked,
     soups: el.showSoupsToggle.checked,
     sides: el.showSidesToggle.checked
   };
-  state.data.general.sectionSettings = normalizeSectionSettings({
-    sandwiches: {
-      itemsPerPage: clampNumber(el.sandwichesItemsPerPageInput.value, 1, 18, 12),
-      order: clampNumber(el.sandwichesOrderInput.value, 1, 4, 1)
-    },
-    drinks: {
-      itemsPerPage: clampNumber(el.drinksItemsPerPageInput.value, 1, 18, 12),
-      order: clampNumber(el.drinksOrderInput.value, 1, 4, 2)
-    },
-    soups: {
-      itemsPerPage: clampNumber(el.soupsItemsPerPageInput.value, 1, 18, 12),
-      order: clampNumber(el.soupsOrderInput.value, 1, 4, 3)
-    },
-    sides: {
-      itemsPerPage: clampNumber(el.sidesItemsPerPageInput.value, 1, 18, 12),
-      order: clampNumber(el.sidesOrderInput.value, 1, 4, 4)
-    }
-  });
-
   saveData();
   state.sectionIndex = 0;
   state.pageIndex = 0;
@@ -215,84 +171,37 @@ function renderAll() {
   renderAdminLists();
 }
 
-function getSectionSettings() {
-  return normalizeSectionSettings(state.data.general.sectionSettings || {});
-}
-
-function normalizeSectionSettings(settings) {
-  const defaults = {
-    sandwiches: { itemsPerPage: 12, order: 1 },
-    drinks: { itemsPerPage: 12, order: 2 },
-    soups: { itemsPerPage: 12, order: 3 },
-    sides: { itemsPerPage: 12, order: 4 }
-  };
-
-  const merged = {
-    sandwiches: { ...defaults.sandwiches, ...(settings.sandwiches || {}) },
-    drinks: { ...defaults.drinks, ...(settings.drinks || {}) },
-    soups: { ...defaults.soups, ...(settings.soups || {}) },
-    sides: { ...defaults.sides, ...(settings.sides || {}) }
-  };
-
-  const usedOrders = new Set();
-  const keys = ["sandwiches", "drinks", "soups", "sides"];
-
-  keys.forEach((key) => {
-    merged[key].itemsPerPage = clampNumber(merged[key].itemsPerPage, 1, 18, defaults[key].itemsPerPage);
-    let order = clampNumber(merged[key].order, 1, 4, defaults[key].order);
-    while (usedOrders.has(order) && order <= 4) order += 1;
-    if (order > 4) {
-      order = [1, 2, 3, 4].find((n) => !usedOrders.has(n)) || defaults[key].order;
-    }
-    merged[key].order = order;
-    usedOrders.add(order);
-  });
-
-  return merged;
-}
-
 function getDisplaySections() {
   const show = state.data.general.showPages || {};
-  const sectionSettings = getSectionSettings();
+  const itemsPerPage = state.data.general.itemsPerPage || 8;
   const sections = [];
 
-  if (show.sandwiches) pushSection(sections, "sandwiches", "Sandwiches", "— SANDWICHES —", "Fresh deli sandwiches and house favorites.", state.data.sandwiches, sectionSettings.sandwiches);
-  if (show.drinks) pushSection(sections, "drinks", "Drinks", "— DRINKS —", "Cold and hot beverages for the deli counter.", state.data.drinks, sectionSettings.drinks);
-  if (show.soups) pushSection(sections, "soups", "Soups", "— SOUPS —", "Hot soup options rotating with the rest of the menu.", state.data.soups, sectionSettings.soups);
-  if (show.sides) pushSection(sections, "sides", "Sides", "— SIDES & EXTRAS —", "Quick add-ons, packaged sides, and bakery extras.", state.data.sides, sectionSettings.sides);
+  if (show.sandwiches) pushSection(sections, "sandwiches", "Sandwiches", "— SANDWICHES —", "Fresh deli sandwiches and house favorites.", state.data.sandwiches, itemsPerPage);
+  if (show.drinks) pushSection(sections, "drinks", "Drinks", "— DRINKS —", "Cold and hot beverages for the deli counter.", state.data.drinks, itemsPerPage);
+  if (show.soups) pushSection(sections, "soups", "Soups", "— SOUPS —", "Hot soup options rotating with the rest of the menu.", state.data.soups, itemsPerPage);
+  if (show.sides) pushSection(sections, "sides", "Sides", "— SIDES & EXTRAS —", "Quick add-ons, packaged sides, and bakery extras.", state.data.sides, itemsPerPage);
 
-  return sections.sort((a, b) => a.order - b.order);
+  return sections;
 }
 
-function pushSection(sections, key, title, kicker, subtitle, items, config) {
+function pushSection(sections, key, title, kicker, subtitle, items, itemsPerPage) {
   const availableItems = items.filter((item) => item.available);
   if (!availableItems.length) return;
-  const itemsPerPage = clampNumber(config.itemsPerPage, 1, 18, 8);
-  sections.push({
-    key,
-    title,
-    kicker,
-    subtitle,
-    order: config.order,
-    itemsPerPage,
-    pages: chunk(availableItems, itemsPerPage)
-  });
+  sections.push({ key, title, kicker, subtitle, pages: chunk(availableItems, itemsPerPage) });
 }
 
 function renderDisplay() {
   state.sections = getDisplaySections();
   const g = state.data.general;
-  el.eyebrowText.textContent = g.eyebrow || "Mt Pulaski, Illinois";
+  el.eyebrowText.textContent = g.eyebrow || "Lincoln, Illinois";
   el.brandTitle.textContent = g.brandTitle || "Market on the Hill";
   el.brandTagline.textContent = g.brandTagline || "";
-  document.body.classList.remove("font-small", "font-normal", "font-large");
-  document.body.classList.add(`font-${g.fontScale || "normal"}`);
 
   if (!state.sections.length) {
     el.sectionKicker.textContent = "— DISPLAY —";
     el.sectionTitle.textContent = "Nothing to display";
     el.sectionSubtitle.textContent = "Enable a section and mark items available in settings.";
-    el.menuList.className = "menu-list layout-cards layout-4";
+    el.menuList.className = "menu-list layout-cards";
     el.menuList.innerHTML = `<article class="menu-item empty-card"><div>Use the small settings button in the top-right corner to open admin controls.</div></article>`;
     return;
   }
@@ -305,15 +214,8 @@ function renderDisplay() {
   el.sectionKicker.textContent = section.kicker;
   el.sectionTitle.textContent = section.title;
   el.sectionSubtitle.textContent = section.subtitle;
-  el.menuList.className = `menu-list layout-cards ${layoutClassForSection(section.itemsPerPage)}`;
+  el.menuList.className = "menu-list layout-cards";
   el.menuList.innerHTML = page.map(renderMenuCard).join("");
-}
-
-function layoutClassForSection(itemsPerPage) {
-  if (itemsPerPage <= 1) return "layout-1";
-  if (itemsPerPage <= 4) return "layout-2";
-  if (itemsPerPage <= 6) return "layout-3";
-  return "layout-4";
 }
 
 function renderMenuCard(item) {
@@ -492,15 +394,7 @@ function loadData() {
 
 function mergeDefaults(data, defaults) {
   return {
-    general: {
-      ...defaults.general,
-      ...(data.general || {}),
-      showPages: { ...defaults.general.showPages, ...(data.general?.showPages || {}) },
-      sectionSettings: normalizeSectionSettings({
-        ...(defaults.general.sectionSettings || {}),
-        ...(data.general?.sectionSettings || {})
-      })
-    },
+    general: { ...defaults.general, ...(data.general || {}), showPages: { ...defaults.general.showPages, ...(data.general?.showPages || {}) } },
     sandwiches: Array.isArray(data.sandwiches) ? data.sandwiches : clone(defaults.sandwiches),
     drinks: Array.isArray(data.drinks) ? data.drinks : clone(defaults.drinks),
     soups: Array.isArray(data.soups) ? data.soups : clone(defaults.soups),

@@ -15,15 +15,6 @@ Public-facing rotating menu demo for Market on the Hill.
 - The display rotates through enabled sections and paged items based on local settings.
 - Settings remain device-local through browser storage.
 
-## Live Demo
-- https://jstiner.github.io/MarketOnTheHill/
+## Layout fix
 
-## Notes
-- Default eyebrow/location updated to Mt Pulaski, Illinois.
-- Each section now has its own items-per-panel setting and display order.
-
-
-## Display defaults
-- Default items per panel for each section: 12
-- Recommended maximum items per panel: 12
-- Word size control added with Smaller / Default / Larger options
+- Forced base menu grid to 3 columns on tablet/default layouts so layout helper classes cannot fall back to 4 columns.
