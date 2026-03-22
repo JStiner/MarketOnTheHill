@@ -1,21 +1,41 @@
-# Market on the Hill Demo
+# Market on the Hill Menu Demo
 
-A Market on the Hill menu demo modeled after the Top Hat layout, but updated for a deli-style grocery concept.
+This project is a direct adaptation of the working Top Hat demo.
+It keeps the same core single-page architecture, local-storage settings model, and timed section/page rotation behavior, while changing the content and branding for Market on the Hill.
 
-## Included in this demo
-- Market on the Hill branding and logo
-- lighter website-inspired color palette using navy, gold, silver, and bright neutrals
-- sandwich section with individual menu boxes, matching the drinks presentation style
-- drinks, condiments, and deli sides for a complete rotating display
-- local-device admin/settings panel for quick edits without storing credentials in the repo
+## Files that control the demo
 
-## Sections
-- Drinks
+- `index.html`
+  - branding/header markup
+  - settings modal structure
+  - section title/subtitle placeholders
+- `default-data.js`
+  - demo data
+  - default section visibility
+  - default branding text and rotation settings
+- `app.js`
+  - section rendering
+  - rotation behavior
+  - settings save/load logic
+  - admin editor behavior
+- `styles.css`
+  - light visual theme
+  - layout styling
+  - card appearance
+  - settings button placement
+- `assets/market-on-the-hill-logo.svg`
+  - simplified Market on the Hill brand mark used in the header
+
+## Current menu sections
+
 - Sandwiches
-- Deli Sides
-- Condiments (admin editable)
+- Drinks
+- Soups
+- Sides
 
 ## Notes
-- All sandwich references now use the `sandwiches` key in code and settings.
-- The app still includes a migration path for earlier local demo data so older saved browser settings can load once and convert cleanly.
-- No secrets, API keys, or passwords are stored in this package.
+
+- Rotation logic is preserved from the Top Hat build: the display rotates through pages within a section, then advances to the next enabled section.
+- Settings are now opened from a subtle top-right gear button instead of a hidden press-and-hold hotspot.
+- Sandwiches now render as boxed cards, consistent with the other menu sections.
+- The included logo asset is a simplified SVG recreation based on the logo image provided in chat.

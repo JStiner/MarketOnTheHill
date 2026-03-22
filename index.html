@@ -1,19 +1,213 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Market on the Hill</title>
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Market on the Hill display menu demo" />
+  <title>Market on the Hill Menu</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <button id="settingsHotspot" class="settings-hotspot" aria-label="Open settings" title="Settings">⚙</button>
 
-<header>
-  <h1>Market on the Hill</h1>
-</header>
+  <div class="screen-shell">
+    <header class="brand-header">
+      <div class="header-side-dots" aria-hidden="true">
+        <span class="dot dot-light"></span>
+        <span class="dot dot-gold"></span>
+        <span class="dot dot-light"></span>
+      </div>
 
-<div id="displayColumns" class="container"></div>
+      <div class="brand-center">
+        <img src="assets/market-on-the-hill-logo.svg" alt="Market on the Hill logo" class="brand-logo" />
+        <div class="brand-copy">
+          <div class="eyebrow" id="eyebrowText">Lincoln, Illinois</div>
+          <h1 id="brandTitle">Market on the Hill</h1>
+          <p id="brandTagline">Sandwiches, soups, drinks, and deli favorites</p>
+        </div>
+      </div>
 
-<script src="app.js"></script>
+      <div class="header-side-dots" aria-hidden="true">
+        <span class="dot dot-light"></span>
+        <span class="dot dot-gold"></span>
+        <span class="dot dot-light"></span>
+      </div>
+    </header>
+
+    <main class="display-main">
+      <section class="section-stage">
+        <div class="section-meta">
+          <span class="section-kicker" id="sectionKicker">— SANDWICHES —</span>
+        </div>
+
+        <div class="hero-copy">
+          <h2 id="sectionTitle">Sandwiches</h2>
+          <p id="sectionSubtitle">Fresh deli sandwiches and house favorites.</p>
+        </div>
+
+        <div id="menuList" class="menu-list" aria-live="polite"></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="settingsModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="modal-card settings-card">
+      <div class="modal-header">
+        <div>
+          <p class="modal-kicker">Admin</p>
+          <h2 id="settingsTitle">Settings</h2>
+          <p class="modal-subtitle">Local device settings for the market display.</p>
+        </div>
+        <button id="closeSettings" class="btn btn-ghost" type="button">Close</button>
+      </div>
+
+      <nav class="tabs" id="settingsTabs" aria-label="Settings sections">
+        <button class="tab-btn active" data-tab="general" type="button">General</button>
+        <button class="tab-btn" data-tab="sandwiches" type="button">Sandwiches</button>
+        <button class="tab-btn" data-tab="drinks" type="button">Drinks</button>
+        <button class="tab-btn" data-tab="soups" type="button">Soups</button>
+        <button class="tab-btn" data-tab="sides" type="button">Sides</button>
+      </nav>
+
+      <div class="tab-panels">
+        <section class="tab-panel active" data-panel="general">
+          <div class="panel-grid">
+            <label>
+              <span>Location / eyebrow text</span>
+              <input id="eyebrowInput" type="text" />
+            </label>
+            <label>
+              <span>Brand title</span>
+              <input id="brandTitleInput" type="text" />
+            </label>
+            <label class="full-width">
+              <span>Tagline</span>
+              <input id="brandTaglineInput" type="text" />
+            </label>
+            <label>
+              <span>Rotation speed (seconds)</span>
+              <input id="rotationSpeedInput" type="number" min="5" max="120" step="1" />
+            </label>
+            <label>
+              <span>Items per page</span>
+              <input id="itemsPerPageInput" type="number" min="3" max="18" step="1" />
+            </label>
+          </div>
+
+          <div class="switch-block">
+            <h3>Show sections</h3>
+            <label class="switch-row"><span>Sandwiches</span><input id="showSandwichesToggle" type="checkbox" /></label>
+            <label class="switch-row"><span>Drinks</span><input id="showDrinksToggle" type="checkbox" /></label>
+            <label class="switch-row"><span>Soups</span><input id="showSoupsToggle" type="checkbox" /></label>
+            <label class="switch-row"><span>Sides</span><input id="showSidesToggle" type="checkbox" /></label>
+          </div>
+
+          <div class="action-row">
+            <button id="saveGeneral" class="btn btn-primary" type="button">Save general settings</button>
+            <button id="resetDefaults" class="btn btn-danger" type="button">Reset to defaults</button>
+          </div>
+        </section>
+
+        <section class="tab-panel" data-panel="sandwiches">
+          <div class="panel-head">
+            <h3>Sandwiches</h3>
+            <button id="addSandwichBtn" class="btn btn-primary" type="button">Add item</button>
+          </div>
+          <div id="sandwichesList" class="admin-list"></div>
+        </section>
+
+        <section class="tab-panel" data-panel="drinks">
+          <div class="panel-head">
+            <h3>Drinks</h3>
+            <button id="addDrinkBtn" class="btn btn-primary" type="button">Add item</button>
+          </div>
+          <div id="drinksList" class="admin-list"></div>
+        </section>
+
+        <section class="tab-panel" data-panel="soups">
+          <div class="panel-head">
+            <h3>Soups</h3>
+            <button id="addSoupBtn" class="btn btn-primary" type="button">Add item</button>
+          </div>
+          <div id="soupsList" class="admin-list"></div>
+        </section>
+
+        <section class="tab-panel" data-panel="sides">
+          <div class="panel-head">
+            <h3>Sides</h3>
+            <button id="addSideBtn" class="btn btn-primary" type="button">Add item</button>
+          </div>
+          <div id="sidesList" class="admin-list"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div id="editorModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
+    <div class="modal-card narrow">
+      <div class="modal-header">
+        <div>
+          <p class="modal-kicker">Edit</p>
+          <h2 id="editorTitle">Edit item</h2>
+          <p id="editorSubtitle" class="modal-subtitle">Update menu content</p>
+        </div>
+        <button id="closeEditor" class="btn btn-ghost" type="button">Close</button>
+      </div>
+
+      <form id="editorForm" class="editor-form">
+        <input id="editorType" type="hidden" />
+        <input id="editorId" type="hidden" />
+
+        <label>
+          <span>Name</span>
+          <input id="editorName" type="text" required />
+        </label>
+
+        <label id="editorDescriptionWrap">
+          <span>Description / what’s on it</span>
+          <textarea id="editorDescription" rows="4"></textarea>
+        </label>
+
+        <label id="editorStyleWrap">
+          <span>Style / category</span>
+          <input id="editorStyle" type="text" />
+        </label>
+
+        <label id="editorOptionsWrap">
+          <span>Bread / options / extras</span>
+          <input id="editorOptions" type="text" />
+        </label>
+
+        <label class="switch-row">
+          <span>Available</span>
+          <input id="editorAvailable" type="checkbox" />
+        </label>
+
+        <div class="action-row">
+          <button type="submit" class="btn btn-primary">Save item</button>
+          <button id="deleteItemBtn" type="button" class="btn btn-danger hidden">Delete item</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="confirmModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="modal-card narrow">
+      <div class="modal-header">
+        <div>
+          <p class="modal-kicker">Warning</p>
+          <h2 id="confirmTitle">Reset to defaults?</h2>
+          <p class="modal-subtitle">This will erase all local changes on this device.</p>
+        </div>
+      </div>
+      <div class="action-row">
+        <button id="confirmReset" class="btn btn-danger" type="button">Yes, do it</button>
+        <button id="cancelReset" class="btn btn-ghost" type="button">No, don't do it</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="default-data.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
