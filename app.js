@@ -595,11 +595,11 @@ function renderHeaderHours() {
   const columnOne = columnOneDays.filter((day) => hours[day].enabled);
   const columnTwo = columnTwoDays.filter((day) => hours[day].enabled);
 
-  const renderColumn = (title, days) => {
+  const renderColumn = (title, days,showTitle = true) => {
     if (!days.length) return "";
     return `
       <div class="hours-display-column">
-        <div class="hours-display-title">${title}</div>
+        <div class="hours-display-title">${title}</div>:""
         ${days.map((day) => `
           <div class="hours-display-row">
             <span class="hours-display-day">${capitalize(day)}</span>
