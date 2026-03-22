@@ -1,21 +1,21 @@
 # Market on the Hill Demo
 
-This is a Market on the Hill themed demo built from the Top Hat Creamery menu display.
+A Market on the Hill menu demo modeled after the Top Hat layout, but updated for a deli-style grocery concept.
 
-## What changed
-- Rebranded with Market on the Hill logo and color palette
-- Replaced the ice cream board with deli-style sandwiches
-- Updated the other section to deli sides / extras
-- Kept the same local-only settings workflow from the Top Hat project
+## Included in this demo
+- Market on the Hill branding and logo
+- lighter website-inspired color palette using navy, gold, silver, and bright neutrals
+- sandwich section with individual menu boxes, matching the drinks presentation style
+- drinks, condiments, and deli sides for a complete rotating display
+- local-device admin/settings panel for quick edits without storing credentials in the repo
 
-## Files
-- `index.html` — main display
-- `styles.css` — theme and layout
-- `app.js` — rotation, admin, local storage behavior
-- `default-data.js` — starter menu content
-- `assets/logo.png` — Market on the Hill logo used by the demo
+## Sections
+- Drinks
+- Sandwiches
+- Deli Sides
+- Condiments (admin editable)
 
 ## Notes
-- Settings are still opened from the hidden top-right press-and-hold hotspot
-- All edits remain local to the device unless the files in the repo are updated
-- The internal `iceCream` data key was intentionally left as-is in code to avoid a larger refactor; it now represents the sandwich board
+- All sandwich references now use the `sandwiches` key in code and settings.
+- The app still includes a migration path for earlier local demo data so older saved browser settings can load once and convert cleanly.
+- No secrets, API keys, or passwords are stored in this package.

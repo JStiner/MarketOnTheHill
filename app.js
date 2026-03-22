@@ -1,5 +1,4 @@
-
-const STORAGE_KEY = "market-on-the-hill-menu-demo-v1";
+const STORAGE_KEY = "market-on-the-hill-menu-demo-v2";
 
 const state = {
   data: loadData(),
@@ -26,7 +25,7 @@ const el = {
   rotationSpeedInput: document.getElementById("rotationSpeedInput"),
   itemsPerPageInput: document.getElementById("itemsPerPageInput"),
   showDrinksToggle: document.getElementById("showDrinksToggle"),
-  showIceCreamToggle: document.getElementById("showIceCreamToggle"),
+  showSandwichesToggle: document.getElementById("showSandwichesToggle"),
   showOtherToggle: document.getElementById("showOtherToggle"),
   eyebrowText: document.getElementById("eyebrowText"),
   brandTitle: document.getElementById("brandTitle"),
@@ -35,11 +34,11 @@ const el = {
   sectionTitle: document.getElementById("sectionTitle"),
   sectionSubtitle: document.getElementById("sectionSubtitle"),
   menuList: document.getElementById("menuList"),
-  iceCreamList: document.getElementById("iceCreamList"),
+  sandwichesList: document.getElementById("sandwichesList"),
   drinksList: document.getElementById("drinksList"),
   syrupsList: document.getElementById("syrupsList"),
   otherList: document.getElementById("otherList"),
-  addIceCreamBtn: document.getElementById("addIceCreamBtn"),
+  addSandwichBtn: document.getElementById("addSandwichBtn"),
   addDrinkBtn: document.getElementById("addDrinkBtn"),
   addSyrupBtn: document.getElementById("addSyrupBtn"),
   addOtherBtn: document.getElementById("addOtherBtn"),
@@ -89,7 +88,7 @@ function bindEvents() {
   });
 
   [
-    [el.addIceCreamBtn, "iceCream"],
+    [el.addSandwichBtn, "sandwiches"],
     [el.addDrinkBtn, "drinks"],
     [el.addSyrupBtn, "syrups"],
     [el.addOtherBtn, "other"]
@@ -98,7 +97,7 @@ function bindEvents() {
   });
 
   [
-    [el.iceCreamList, "iceCream"],
+    [el.sandwichesList, "sandwiches"],
     [el.drinksList, "drinks"],
     [el.syrupsList, "syrups"],
     [el.otherList, "other"]
@@ -154,19 +153,19 @@ function populateGeneralForm() {
   el.rotationSpeedInput.value = g.rotationSpeedSeconds || 12;
   el.itemsPerPageInput.value = g.itemsPerPage || 8;
   el.showDrinksToggle.checked = !!g.showPages.drinks;
-  el.showIceCreamToggle.checked = !!g.showPages.iceCream;
+  el.showSandwichesToggle.checked = !!g.showPages.sandwiches;
   el.showOtherToggle.checked = !!g.showPages.other;
 }
 
 function saveGeneralSettings() {
-  state.data.general.eyebrow = el.eyebrowInput.value.trim() || "Mt. Pulaski, Illinois";
+  state.data.general.eyebrow = el.eyebrowInput.value.trim() || "Lincoln, Illinois";
   state.data.general.brandTitle = el.brandTitleInput.value.trim() || "Market on the Hill";
   state.data.general.brandTagline = el.brandTaglineInput.value.trim() || "Community-owned grocery • deli sandwiches • quick grab-and-go favorites";
   state.data.general.rotationSpeedSeconds = clampNumber(el.rotationSpeedInput.value, 5, 120, 12);
   state.data.general.itemsPerPage = clampNumber(el.itemsPerPageInput.value, 3, 18, 8);
   state.data.general.showPages = {
     drinks: el.showDrinksToggle.checked,
-    iceCream: el.showIceCreamToggle.checked,
+    sandwiches: el.showSandwichesToggle.checked,
     other: el.showOtherToggle.checked
   };
   saveData();
@@ -199,15 +198,15 @@ function getDisplaySections() {
     }
   }
 
-  if (show.iceCream) {
-    const items = state.data.iceCream.filter((item) => item.available);
+  if (show.sandwiches) {
+    const items = state.data.sandwiches.filter((item) => item.available);
     if (items.length) {
       sections.push({
-        key: "iceCream",
+        key: "sandwiches",
         title: "Deli Sandwiches",
         kicker: "— SANDWICHES —",
         subtitle: "Classic deli-style sandwiches built for lunch and grab-and-go orders.",
-        pages: [items]
+        pages: chunk(items, itemsPerPage)
       });
     }
   }
@@ -231,7 +230,7 @@ function getDisplaySections() {
 function renderDisplay() {
   state.sections = getDisplaySections();
   const g = state.data.general;
-  el.eyebrowText.textContent = g.eyebrow || "Mt. Pulaski, Illinois";
+  el.eyebrowText.textContent = g.eyebrow || "Lincoln, Illinois";
   el.brandTitle.textContent = g.brandTitle || "Market on the Hill";
   el.brandTagline.textContent = g.brandTagline || "";
 
@@ -252,55 +251,32 @@ function renderDisplay() {
   el.sectionKicker.textContent = section.kicker;
   el.sectionTitle.textContent = section.title;
   el.sectionSubtitle.textContent = section.subtitle;
-
-  if (section.key === "iceCream") {
-    el.menuList.className = "menu-list layout-board layout-board-icecream";
-    el.menuList.innerHTML = renderIceCreamBoard(page);
-    return;
-  }
-
   el.menuList.className = "menu-list layout-cards";
-  el.menuList.innerHTML = page.map((item) => {
-    const meta = section.key === "drinks" ? buildDrinkMeta(item) : "";
-    return `
-      <article class="menu-item">
-        <div>
-          <h3 class="menu-item-title">${escapeHtml(item.name)}</h3>
-          <div class="menu-item-copy">${escapeHtml(item.description || "")}</div>
-        </div>
-        ${meta ? `<div class="menu-item-meta">${meta}</div>` : ""}
-      </article>`;
-  }).join("");
+  el.menuList.innerHTML = page.map((item) => renderMenuCard(section.key, item)).join("");
 }
 
-function renderIceCreamBoard(items) {
-  const cols = splitIntoColumns(items, 3);
-  return cols.map((column, colIndex) => `
-    <div class="board-column board-column-icecream accent-${(colIndex % 3) + 1}">
-      ${column.map((item) => `
-        <div class="board-item board-item-icecream">
-          <div class="board-bullet">•</div>
-          <div class="board-name">${escapeHtml(item.name)}</div>
-        </div>
-      `).join("")}
-    </div>
-  `).join("");
+function renderMenuCard(type, item) {
+  const meta = buildMeta(type, item);
+  return `
+    <article class="menu-item ${type === "sandwiches" ? "menu-item-sandwich" : ""}">
+      <div>
+        <h3 class="menu-item-title">${escapeHtml(item.name)}</h3>
+        <div class="menu-item-copy">${escapeHtml(item.description || "")}</div>
+      </div>
+      ${meta ? `<div class="menu-item-meta">${meta}</div>` : ""}
+    </article>`;
 }
 
-function splitIntoColumns(items, count) {
-  const columns = Array.from({ length: count }, () => []);
-  const perColumn = Math.ceil(items.length / count);
-  items.forEach((item, index) => {
-    const colIndex = Math.min(count - 1, Math.floor(index / perColumn));
-    columns[colIndex].push(item);
-  });
-  return columns;
-}
-
-function buildDrinkMeta(item) {
+function buildMeta(type, item) {
   const parts = [];
-  if (item.base) parts.push(`Base: ${escapeHtml(item.base)}`);
-  if (item.syrups?.length) parts.push(`Extras: ${escapeHtml(item.syrups.join(", "))}`);
+  if (type === "drinks") {
+    if (item.base) parts.push(`Base: ${escapeHtml(item.base)}`);
+    if (item.syrups?.length) parts.push(`Extras: ${escapeHtml(item.syrups.join(", "))}`);
+  }
+  if (type === "sandwiches") {
+    if (item.category) parts.push(`Style: ${escapeHtml(item.category)}`);
+    if (item.extras?.length) parts.push(`Bread / options: ${escapeHtml(item.extras.join(", "))}`);
+  }
   return parts.join(" • ");
 }
 
@@ -333,7 +309,7 @@ function stopRotation() {
 }
 
 function renderAdminLists() {
-  renderAdminList("iceCream", el.iceCreamList, state.data.iceCream);
+  renderAdminList("sandwiches", el.sandwichesList, state.data.sandwiches);
   renderAdminList("drinks", el.drinksList, state.data.drinks);
   renderAdminList("syrups", el.syrupsList, state.data.syrups);
   renderAdminList("other", el.otherList, state.data.other);
@@ -371,20 +347,22 @@ function openEditor(type, id = "") {
   const isNew = !id;
   const source = state.data[type];
   const item = isNew
-    ? { id: "", name: "", description: "", base: "", syrups: [], available: true }
+    ? { id: "", name: "", description: "", base: "", syrups: [], category: "", extras: [], available: true }
     : source.find((entry) => entry.id === id);
 
   el.editorType.value = type;
   el.editorId.value = item?.id || "";
   el.editorName.value = item?.name || "";
   el.editorDescription.value = item?.description || "";
-  el.editorBase.value = item?.base || "";
-  el.editorSyrups.value = (item?.syrups || []).join(", ");
+  el.editorBase.value = type === "sandwiches" ? (item?.category || "") : (item?.base || "");
+  el.editorSyrups.value = type === "sandwiches" ? ((item?.extras || []).join(", ")) : ((item?.syrups || []).join(", "));
   el.editorAvailable.checked = item?.available ?? true;
   el.editorTitle.textContent = isNew ? "Add item" : "Edit item";
   el.editorSubtitle.textContent = `${labelForType(type)} management`;
-  el.editorBaseWrap.classList.toggle("hidden", type !== "drinks");
-  el.editorSyrupsWrap.classList.toggle("hidden", type !== "drinks");
+  el.editorBaseWrap.classList.toggle("hidden", !(type === "drinks" || type === "sandwiches"));
+  el.editorSyrupsWrap.classList.toggle("hidden", !(type === "drinks" || type === "sandwiches"));
+  el.editorBaseWrap.querySelector("span").textContent = type === "sandwiches" ? "Category / style" : "Base / category";
+  el.editorSyrupsWrap.querySelector("span").textContent = type === "sandwiches" ? "Bread / extras (comma separated)" : "Flavor notes / extras (comma separated)";
   el.deleteItemBtn.classList.toggle("hidden", isNew);
   el.editorModal.classList.remove("hidden");
 }
@@ -409,6 +387,11 @@ function saveEditorForm(event) {
   if (type === "drinks") {
     payload.base = el.editorBase.value.trim();
     payload.syrups = el.editorSyrups.value.split(",").map((value) => value.trim()).filter(Boolean);
+  }
+
+  if (type === "sandwiches") {
+    payload.category = el.editorBase.value.trim();
+    payload.extras = el.editorSyrups.value.split(",").map((value) => value.trim()).filter(Boolean);
   }
 
   const list = state.data[type];
@@ -440,6 +423,7 @@ function deleteCurrentItem() {
 
 function resetToDefaults() {
   localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem("market-on-the-hill-menu-demo-v1");
   state.data = clone(window.DEFAULT_MENU_DATA);
   state.sectionIndex = 0;
   state.pageIndex = 0;
@@ -456,7 +440,7 @@ function saveData() {
 
 function loadData() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("market-on-the-hill-menu-demo-v1");
     if (!raw) return clone(window.DEFAULT_MENU_DATA);
     return mergeDefaults(JSON.parse(raw), window.DEFAULT_MENU_DATA);
   } catch {
@@ -466,16 +450,29 @@ function loadData() {
 
 function mergeDefaults(data, defaults) {
   return {
-    general: { ...defaults.general, ...(data.general || {}), showPages: { ...defaults.general.showPages, ...(data.general?.showPages || {}) } },
+    general: {
+      ...defaults.general,
+      ...(data.general || {}),
+      showPages: {
+        ...defaults.general.showPages,
+        drinks: data.general?.showPages?.drinks ?? defaults.general.showPages.drinks,
+        sandwiches: data.general?.showPages?.sandwiches ?? data.general?.showPages?.iceCream ?? defaults.general.showPages.sandwiches,
+        other: data.general?.showPages?.other ?? defaults.general.showPages.other
+      }
+    },
     drinks: Array.isArray(data.drinks) ? data.drinks : clone(defaults.drinks),
-    iceCream: Array.isArray(data.iceCream) ? data.iceCream : clone(defaults.iceCream),
+    sandwiches: Array.isArray(data.sandwiches)
+      ? data.sandwiches
+      : Array.isArray(data.iceCream)
+        ? data.iceCream.map((item) => ({ ...item, category: item.category || "", extras: item.extras || [] }))
+        : clone(defaults.sandwiches),
     syrups: Array.isArray(data.syrups) ? data.syrups : clone(defaults.syrups),
     other: Array.isArray(data.other) ? data.other : clone(defaults.other)
   };
 }
 
 function labelForType(type) {
-  return ({ iceCream: "Sandwiches", drinks: "Drinks", syrups: "Condiments", other: "Deli Sides" })[type] || type;
+  return ({ sandwiches: "Sandwiches", drinks: "Drinks", syrups: "Condiments", other: "Deli Sides" })[type] || type;
 }
 
 function uid(prefix) {
