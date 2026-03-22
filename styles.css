@@ -159,7 +159,9 @@ label span {
   align-self: center;
   justify-self: end;
 }
-
+.hours-display-column:nth-child(2) .hours-display-title {
+  visibility: hidden;
+}
 .display-main {
   min-height: 0;
   display: block;
