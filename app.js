@@ -6,7 +6,8 @@ const state = {
   hotspotTimer: null,
   sectionIndex: 0,
   pageIndex: 0,
-  sections: []
+  sections: [],
+  sectionPageMap: {}
 };
 
 const el = {
@@ -171,6 +172,7 @@ function saveGeneralSettings() {
   saveData();
   state.sectionIndex = 0;
   state.pageIndex = 0;
+  state.sectionPageMap = {};
   renderAll();
   startRotation();
 }
@@ -233,44 +235,39 @@ function renderDisplay() {
   el.brandTitle.textContent = g.brandTitle || "Market on the Hill";
   el.brandTagline.textContent = g.brandTagline || "";
 
-  const columns = [];
-  if (g.showPages?.sandwiches) {
-    const items = state.data.sandwiches.filter((item) => item.available);
-    if (items.length) {
-      columns.push(renderSectionPanel("sandwiches", "Sandwiches", "Deli favorites made fresh", items));
-    }
-  }
-  if (g.showPages?.drinks) {
-    const items = state.data.drinks.filter((item) => item.available);
-    if (items.length) {
-      columns.push(renderSectionPanel("drinks", "Drinks", "Cold and quick pairings", items));
-    }
-  }
-  if (g.showPages?.other) {
-    const items = state.data.other.filter((item) => item.available);
-    if (items.length) {
-      columns.push(renderSectionPanel("other", "Sides & Extras", "Add-ons from the deli case", items));
-    }
-  }
+  const sections = getDisplaySections();
+  state.sections = sections;
 
-  if (!columns.length) {
+  if (!sections.length) {
     el.displayColumns.innerHTML = `<section class="menu-panel"><div class="empty-card"><div>Use the hidden top-right corner press-and-hold to open settings.</div></div></section>`;
     return;
   }
 
+  const columns = sections.map((section) => {
+    const pageCount = section.pages.length || 1;
+    const currentIndex = Math.min(state.sectionPageMap[section.key] || 0, pageCount - 1);
+    state.sectionPageMap[section.key] = currentIndex;
+    const items = section.pages[currentIndex] || [];
+    return renderSectionPanel(section, items, currentIndex, pageCount);
+  });
+
   el.displayColumns.innerHTML = columns.join("");
 }
 
-function renderSectionPanel(type, title, subtitle, items) {
-  const cards = items.map((item) => renderMenuCard(type, item)).join("");
+function renderSectionPanel(section, items, currentIndex, pageCount) {
+  const cards = items.map((item) => renderMenuCard(section.key, item)).join("");
+  const pageBadge = pageCount > 1
+    ? `<div class="panel-page-badge">Page ${currentIndex + 1} / ${pageCount}</div>`
+    : "";
   return `
-    <section class="menu-panel menu-panel-${type}">
+    <section class="menu-panel menu-panel-${section.key}">
       <div class="panel-title-wrap">
-        <div class="panel-kicker">Market on the Hill</div>
-        <h2 class="panel-title">${escapeHtml(title)}</h2>
-        <p class="panel-subtitle">${escapeHtml(subtitle)}</p>
+        <div class="panel-kicker">${escapeHtml(section.kicker || "Market on the Hill")}</div>
+        <h2 class="panel-title">${escapeHtml(section.title)}</h2>
+        <p class="panel-subtitle">${escapeHtml(section.subtitle || "")}</p>
+        ${pageBadge}
       </div>
-      <div class="menu-list menu-list-${type}">${cards}</div>
+      <div class="menu-list menu-list-${section.key}">${cards}</div>
     </section>`;
 }
 
@@ -302,10 +299,37 @@ function buildMeta(type, item) {
 
 function startRotation() {
   stopRotation();
+
+  const seconds = clampNumber(state.data.general.rotationSpeedSeconds, 5, 120, 12);
+  const hasMultiplePages = getDisplaySections().some((section) => section.pages.length > 1);
+
+  if (!hasMultiplePages) return;
+
+  state.rotationTimer = setInterval(() => {
+    rotateNext();
+  }, seconds * 1000);
 }
 
 function rotateNext() {
-  return;
+  const sections = getDisplaySections();
+  if (!sections.length) return;
+
+  let changed = false;
+
+  sections.forEach((section) => {
+    const pageCount = section.pages.length || 1;
+    const currentIndex = state.sectionPageMap[section.key] || 0;
+
+    if (pageCount > 1) {
+      state.sectionPageMap[section.key] = (currentIndex + 1) % pageCount;
+      changed = true;
+    } else {
+      state.sectionPageMap[section.key] = 0;
+    }
+  });
+
+  state.sections = sections;
+  if (changed) renderDisplay();
 }
 
 function stopRotation() {
