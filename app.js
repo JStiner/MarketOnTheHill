@@ -140,7 +140,7 @@ function populateGeneralForm() {
   el.brandTitleInput.value = g.brandTitle || "";
   el.brandTaglineInput.value = g.brandTagline || "";
   el.rotationSpeedInput.value = g.rotationSpeedSeconds || 12;
-  el.itemsPerPageInput.value = g.itemsPerPage || 8;
+  el.itemsPerPageInput.value = g.itemsPerPage || 4;
   el.showSandwichesToggle.checked = !!g.showPages.sandwiches;
   el.showDrinksToggle.checked = !!g.showPages.drinks;
   el.showSoupsToggle.checked = !!g.showPages.soups;
@@ -152,7 +152,7 @@ function saveGeneralSettings() {
   state.data.general.brandTitle = el.brandTitleInput.value.trim() || "Market on the Hill";
   state.data.general.brandTagline = el.brandTaglineInput.value.trim() || "Sandwiches, soups, drinks, and deli favorites";
   state.data.general.rotationSpeedSeconds = clampNumber(el.rotationSpeedInput.value, 5, 120, 12);
-  state.data.general.itemsPerPage = clampNumber(el.itemsPerPageInput.value, 3, 18, 8);
+  state.data.general.itemsPerPage = clampNumber(el.itemsPerPageInput.value, 3, 18, 4);
   state.data.general.showPages = {
     sandwiches: el.showSandwichesToggle.checked,
     drinks: el.showDrinksToggle.checked,

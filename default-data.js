@@ -4,7 +4,7 @@ window.DEFAULT_MENU_DATA = {
     brandTitle: "Market on the Hill",
     brandTagline: "Sandwiches, soups, drinks, and deli favorites",
     rotationSpeedSeconds: 12,
-    itemsPerPage: 8,
+    itemsPerPage: 4,
     showPages: {
       sandwiches: true,
       drinks: true,
