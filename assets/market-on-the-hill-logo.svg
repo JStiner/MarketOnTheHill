@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 420" role="img" aria-labelledby="title desc">
+  <title id="title">Market on the Hill</title>
+  <desc id="desc">Simplified circular logo for Market on the Hill based on the provided brand image.</desc>
+  <defs>
+    <style>
+      .navy { fill:#20206d; }
+      .gold { fill:#c89a56; }
+      .silver { fill:#a8adb7; }
+      .white { fill:#ffffff; }
+      .stroke { stroke:#20206d; stroke-width:6; fill:none; }
+      .brand { font-family: Georgia, 'Times New Roman', serif; }
+      .script { font-family: 'Brush Script MT', cursive; }
+    </style>
+  </defs>
+  <circle cx="210" cy="210" r="182" class="silver"/>
+  <circle cx="210" cy="195" r="160" class="gold"/>
+  <circle cx="210" cy="210" r="145" class="white"/>
+  <circle cx="210" cy="210" r="132" class="navy"/>
+  <path d="M110 242c38-28 88-36 116-28 27-28 67-24 114 0" class="stroke" opacity=".5"/>
+  <path d="M108 245c17-9 40-21 60-24 9 24 19 41 30 61M168 221c26-7 48-8 58-6-4 24-7 48-8 70M226 215c23 2 51 9 88 30-18 10-36 22-52 38" class="stroke" opacity=".55"/>
+  <g class="brand" text-anchor="middle" fill="#ffffff">
+    <text x="210" y="118" font-size="56" font-weight="700" letter-spacing="1">MARKET</text>
+    <rect x="103" y="130" width="72" height="72" fill="#ffffff" opacity=".96"/>
+    <text x="139" y="160" font-size="28" fill="#20206d">ON</text>
+    <text x="139" y="187" font-size="28" fill="#20206d">THE</text>
+    <text x="250" y="185" font-size="62" font-weight="700" letter-spacing="1">HILL</text>
+  </g>
+  <g>
+    <path d="M70 275c24 0 45 18 140 18s127-18 141-18c18 0 34 20 34 40 0 19-17 36-37 36H94c-20 0-39-16-39-37 0-20 16-39 15-39z" class="white"/>
+    <path d="M70 275c24 0 45 18 140 18s127-18 141-18c18 0 34 20 34 40 0 19-17 36-37 36H94c-20 0-39-16-39-37 0-20 16-39 15-39z" class="stroke"/>
+    <text x="210" y="325" text-anchor="middle" class="script" font-size="30" fill="#20206d">A Community-Owned Grocery</text>
+  </g>
+</svg>
