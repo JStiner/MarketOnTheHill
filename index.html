@@ -1,47 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Market on the Hill</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Market on the Hill</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="page-shell">
-    <header class="site-header">
-      <img class="brand-logo" src="assets/logo.webp" alt="Market on the Hill logo" onerror="this.src='assets/logo.png'" />
-      <div class="brand-copy">
-        <p class="eyebrow" id="eyebrow"></p>
-        <h1 id="brandTitle"></h1>
-        <p class="tagline" id="brandTagline"></p>
-      </div>
-    </header>
 
-    <main class="menu-grid" id="menuGrid">
-      <section class="menu-column" id="drinksColumn"></section>
-      <section class="menu-column menu-column--featured" id="sandwichesColumn"></section>
-      <section class="menu-column" id="otherColumn"></section>
-    </main>
-  </div>
+<header>
+  <h1>Market on the Hill</h1>
+</header>
 
-  <button class="settings-toggle" id="settingsToggle" type="button" aria-expanded="false">Settings</button>
-  <aside class="settings-panel" id="settingsPanel" hidden>
-    <h2>Display Settings</h2>
-    <label>
-      Rotation speed (seconds)
-      <input id="rotationSpeedInput" type="number" min="3" max="60" step="1" />
-    </label>
-    <label>
-      Items per page
-      <input id="itemsPerPageInput" type="number" min="1" max="12" step="1" />
-    </label>
-    <div class="settings-actions">
-      <button id="saveSettingsBtn" type="button">Save</button>
-      <button id="resetSettingsBtn" type="button" class="button-secondary">Reset</button>
-    </div>
-  </aside>
+<div id="displayColumns" class="container"></div>
 
-  <script src="default-data.js"></script>
-  <script src="app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
