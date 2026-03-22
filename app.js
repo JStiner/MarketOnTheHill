@@ -4,10 +4,9 @@ const state = {
   data: loadData(),
   rotationTimer: null,
   hotspotTimer: null,
-  sectionIndex: 0,
-  pageIndex: 0,
+  rotationIndex: 0,
   sections: [],
-  sectionPageMap: {}
+  panelQueue: []
 };
 
 const el = {
@@ -237,30 +236,55 @@ function renderDisplay() {
 
   const sections = getDisplaySections();
   state.sections = sections;
+  state.panelQueue = buildPanelQueue(sections);
 
-  if (!sections.length) {
+  if (!state.panelQueue.length) {
     el.displayColumns.innerHTML = `<section class="menu-panel"><div class="empty-card"><div>Use the hidden top-right corner press-and-hold to open settings.</div></div></section>`;
     return;
   }
 
-  const columns = sections.map((section) => {
-    const pageCount = section.pages.length || 1;
-    const currentIndex = Math.min(state.sectionPageMap[section.key] || 0, pageCount - 1);
-    state.sectionPageMap[section.key] = currentIndex;
-    const items = section.pages[currentIndex] || [];
-    return renderSectionPanel(section, items, currentIndex, pageCount);
-  });
+  if (state.rotationIndex >= state.panelQueue.length) state.rotationIndex = 0;
 
-  el.displayColumns.innerHTML = columns.join("");
+  const activePanels = getActivePanels(state.panelQueue, state.rotationIndex, 3);
+  el.displayColumns.innerHTML = activePanels.map((panel, slotIndex) =>
+    renderSectionPanel(panel.section, panel.items, panel.pageIndex, panel.pageCount, slotIndex)
+  ).join("");
 }
 
-function renderSectionPanel(section, items, currentIndex, pageCount) {
+function buildPanelQueue(sections) {
+  const queue = [];
+  sections.forEach((section) => {
+    const pageCount = section.pages.length || 1;
+    section.pages.forEach((items, pageIndex) => {
+      queue.push({
+        key: `${section.key}-${pageIndex}`,
+        section,
+        items,
+        pageIndex,
+        pageCount
+      });
+    });
+  });
+  return queue;
+}
+
+function getActivePanels(queue, startIndex, count) {
+  const active = [];
+  if (!queue.length) return active;
+  const limit = Math.min(count, queue.length);
+  for (let i = 0; i < limit; i += 1) {
+    active.push(queue[(startIndex + i) % queue.length]);
+  }
+  return active;
+}
+
+function renderSectionPanel(section, items, currentIndex, pageCount, slotIndex = 0) {
   const cards = items.map((item) => renderMenuCard(section.key, item)).join("");
   const pageBadge = pageCount > 1
     ? `<div class="panel-page-badge">Page ${currentIndex + 1} / ${pageCount}</div>`
     : "";
   return `
-    <section class="menu-panel menu-panel-${section.key}">
+    <section class="menu-panel menu-panel-${section.key} panel-slot-${slotIndex + 1}">
       <div class="panel-title-wrap">
         <div class="panel-kicker">${escapeHtml(section.kicker || "Market on the Hill")}</div>
         <h2 class="panel-title">${escapeHtml(section.title)}</h2>
@@ -300,36 +324,22 @@ function buildMeta(type, item) {
 function startRotation() {
   stopRotation();
 
+  const panelCount = state.panelQueue.length || buildPanelQueue(getDisplaySections()).length;
+  if (panelCount <= 3) return;
+
   const seconds = clampNumber(state.data.general.rotationSpeedSeconds, 5, 120, 12);
-  const hasMultiplePages = getDisplaySections().some((section) => section.pages.length > 1);
-
-  if (!hasMultiplePages) return;
-
   state.rotationTimer = setInterval(() => {
     rotateNext();
   }, seconds * 1000);
 }
 
 function rotateNext() {
-  const sections = getDisplaySections();
-  if (!sections.length) return;
+  state.panelQueue = buildPanelQueue(getDisplaySections());
+  const panelCount = state.panelQueue.length;
+  if (panelCount <= 3) return;
 
-  let changed = false;
-
-  sections.forEach((section) => {
-    const pageCount = section.pages.length || 1;
-    const currentIndex = state.sectionPageMap[section.key] || 0;
-
-    if (pageCount > 1) {
-      state.sectionPageMap[section.key] = (currentIndex + 1) % pageCount;
-      changed = true;
-    } else {
-      state.sectionPageMap[section.key] = 0;
-    }
-  });
-
-  state.sections = sections;
-  if (changed) renderDisplay();
+  state.rotationIndex = (state.rotationIndex + 3) % panelCount;
+  renderDisplay();
 }
 
 function stopRotation() {
@@ -368,7 +378,7 @@ function toggleAvailability(type, id) {
   if (!item) return;
   item.available = !item.available;
   saveData();
-  state.pageIndex = 0;
+  state.rotationIndex = 0;
   renderAll();
   startRotation();
 }
@@ -434,7 +444,7 @@ function saveEditorForm(event) {
 
   saveData();
   closeEditor();
-  state.pageIndex = 0;
+  state.rotationIndex = 0;
   renderAll();
   startRotation();
 }
@@ -446,7 +456,7 @@ function deleteCurrentItem() {
   state.data[type] = state.data[type].filter((item) => item.id !== id);
   saveData();
   closeEditor();
-  state.pageIndex = 0;
+  state.rotationIndex = 0;
   renderAll();
   startRotation();
 }

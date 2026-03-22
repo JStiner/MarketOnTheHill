@@ -318,3 +318,8 @@ label span {
   .menu-list-sandwiches { grid-template-columns: 1fr; }
   .panel-grid { grid-template-columns: 1fr; }
 }
+
+
+.panel-slot-1 { grid-column: 1; }
+.panel-slot-2 { grid-column: 2; }
+.panel-slot-3 { grid-column: 3; }
