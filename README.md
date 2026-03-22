@@ -21,3 +21,8 @@ Public-facing rotating menu demo for Market on the Hill.
 ## Notes
 - Default eyebrow/location updated to Mt Pulaski, Illinois.
 - Each section now has its own items-per-panel setting and display order.
+
+
+## Logo path fix
+- Header logo now uses `/MarketOnTheHill/assets/market-on-the-hill-logo.svg?v=3` with a relative-path fallback.
+- Removed old `assets/logo.png` and `assets/logo.webp` files to prevent confusion.
