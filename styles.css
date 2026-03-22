@@ -159,6 +159,7 @@ label span {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.55rem;
   align-content: start;
+  align-items: start;
   grid-auto-rows: auto;
 }
 .menu-item {
@@ -171,6 +172,7 @@ label span {
   gap: 0.38rem;
   min-height: 0;
   height: auto;
+  align-self: start;
   box-shadow: 0 8px 20px rgba(31,43,70,0.05);
 }
 .menu-item:nth-child(4n+1) { border-top: 6px solid var(--navy); }

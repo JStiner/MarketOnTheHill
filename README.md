@@ -14,3 +14,6 @@ Public-facing rotating menu demo for Market on the Hill.
 - Branding, labels, and default demo data use Market on the Hill terminology.
 - The display rotates through enabled sections and paged items based on local settings.
 - Settings remain device-local through browser storage.
+
+## Live Demo
+- https://jstiner.github.io/MarketOnTheHill/
