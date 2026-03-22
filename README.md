@@ -17,3 +17,7 @@ Public-facing rotating menu demo for Market on the Hill.
 
 ## Live Demo
 - https://jstiner.github.io/MarketOnTheHill/
+
+## Notes
+- Default eyebrow/location updated to Mt Pulaski, Illinois.
+- Each section now has its own items-per-panel setting and display order.
