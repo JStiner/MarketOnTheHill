@@ -4,6 +4,7 @@ window.DEFAULT_MENU_DATA = {
     brandTitle: "Market on the Hill",
     brandTagline: "Sandwiches, soups, drinks, and deli favorites",
     rotationSpeedSeconds: 12,
+    fontScale: "normal",
     showPages: {
       sandwiches: true,
       drinks: true,
@@ -11,10 +12,10 @@ window.DEFAULT_MENU_DATA = {
       sides: true
     },
     sectionSettings: {
-      sandwiches: { itemsPerPage: 8, order: 1 },
-      drinks: { itemsPerPage: 8, order: 2 },
-      soups: { itemsPerPage: 8, order: 3 },
-      sides: { itemsPerPage: 8, order: 4 }
+      sandwiches: { itemsPerPage: 12, order: 1 },
+      drinks: { itemsPerPage: 12, order: 2 },
+      soups: { itemsPerPage: 12, order: 3 },
+      sides: { itemsPerPage: 12, order: 4 }
     }
   },
   sandwiches: [

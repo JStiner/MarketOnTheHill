@@ -22,6 +22,7 @@ const el = {
   brandTitleInput: document.getElementById("brandTitleInput"),
   brandTaglineInput: document.getElementById("brandTaglineInput"),
   rotationSpeedInput: document.getElementById("rotationSpeedInput"),
+  fontScaleInput: document.getElementById("fontScaleInput"),
   showSandwichesToggle: document.getElementById("showSandwichesToggle"),
   showDrinksToggle: document.getElementById("showDrinksToggle"),
   showSoupsToggle: document.getElementById("showSoupsToggle"),
@@ -153,6 +154,7 @@ function populateGeneralForm() {
   el.brandTitleInput.value = g.brandTitle || "";
   el.brandTaglineInput.value = g.brandTagline || "";
   el.rotationSpeedInput.value = g.rotationSpeedSeconds || 12;
+  el.fontScaleInput.value = g.fontScale || "normal";
 
   el.showSandwichesToggle.checked = !!g.showPages.sandwiches;
   el.showDrinksToggle.checked = !!g.showPages.drinks;
@@ -175,6 +177,7 @@ function saveGeneralSettings() {
   state.data.general.brandTitle = el.brandTitleInput.value.trim() || "Market on the Hill";
   state.data.general.brandTagline = el.brandTaglineInput.value.trim() || "Sandwiches, soups, drinks, and deli favorites";
   state.data.general.rotationSpeedSeconds = clampNumber(el.rotationSpeedInput.value, 5, 120, 12);
+  state.data.general.fontScale = ["small","normal","large"].includes(el.fontScaleInput.value) ? el.fontScaleInput.value : "normal";
   state.data.general.showPages = {
     sandwiches: el.showSandwichesToggle.checked,
     drinks: el.showDrinksToggle.checked,
@@ -183,19 +186,19 @@ function saveGeneralSettings() {
   };
   state.data.general.sectionSettings = normalizeSectionSettings({
     sandwiches: {
-      itemsPerPage: clampNumber(el.sandwichesItemsPerPageInput.value, 1, 18, 8),
+      itemsPerPage: clampNumber(el.sandwichesItemsPerPageInput.value, 1, 18, 12),
       order: clampNumber(el.sandwichesOrderInput.value, 1, 4, 1)
     },
     drinks: {
-      itemsPerPage: clampNumber(el.drinksItemsPerPageInput.value, 1, 18, 8),
+      itemsPerPage: clampNumber(el.drinksItemsPerPageInput.value, 1, 18, 12),
       order: clampNumber(el.drinksOrderInput.value, 1, 4, 2)
     },
     soups: {
-      itemsPerPage: clampNumber(el.soupsItemsPerPageInput.value, 1, 18, 8),
+      itemsPerPage: clampNumber(el.soupsItemsPerPageInput.value, 1, 18, 12),
       order: clampNumber(el.soupsOrderInput.value, 1, 4, 3)
     },
     sides: {
-      itemsPerPage: clampNumber(el.sidesItemsPerPageInput.value, 1, 18, 8),
+      itemsPerPage: clampNumber(el.sidesItemsPerPageInput.value, 1, 18, 12),
       order: clampNumber(el.sidesOrderInput.value, 1, 4, 4)
     }
   });
@@ -218,10 +221,10 @@ function getSectionSettings() {
 
 function normalizeSectionSettings(settings) {
   const defaults = {
-    sandwiches: { itemsPerPage: 8, order: 1 },
-    drinks: { itemsPerPage: 8, order: 2 },
-    soups: { itemsPerPage: 8, order: 3 },
-    sides: { itemsPerPage: 8, order: 4 }
+    sandwiches: { itemsPerPage: 12, order: 1 },
+    drinks: { itemsPerPage: 12, order: 2 },
+    soups: { itemsPerPage: 12, order: 3 },
+    sides: { itemsPerPage: 12, order: 4 }
   };
 
   const merged = {
@@ -282,6 +285,8 @@ function renderDisplay() {
   el.eyebrowText.textContent = g.eyebrow || "Mt Pulaski, Illinois";
   el.brandTitle.textContent = g.brandTitle || "Market on the Hill";
   el.brandTagline.textContent = g.brandTagline || "";
+  document.body.classList.remove("font-small", "font-normal", "font-large");
+  document.body.classList.add(`font-${g.fontScale || "normal"}`);
 
   if (!state.sections.length) {
     el.sectionKicker.textContent = "— DISPLAY —";
