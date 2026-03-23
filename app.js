@@ -1,8 +1,12 @@
-const STORAGE_KEY = "market-on-the-hill-menu-v1";
+const STORAGE_KEY = "market-on-the-hill-menu-v2";
+const SETTINGS_HOLD_MS = 700;
+const SECTION_TYPES = ["sandwiches", "drinks", "soups", "sides"];
 
 const state = {
   data: loadData(),
   rotationTimer: null,
+  rotationDeadline: null,
+  hotspotTimer: null,
   sectionIndex: 0,
   pageIndex: 0,
   sections: []
@@ -22,20 +26,37 @@ const el = {
   brandTitleInput: document.getElementById("brandTitleInput"),
   brandTaglineInput: document.getElementById("brandTaglineInput"),
   rotationSpeedInput: document.getElementById("rotationSpeedInput"),
+  autoRotateInput: document.getElementById("autoRotateInput"),
   fontScaleInput: document.getElementById("fontScaleInput"),
   headerHours: document.getElementById("headerHours"),
+  navLeft: document.getElementById("navLeft"),
+  navRight: document.getElementById("navRight"),
+
   showSandwichesToggle: document.getElementById("showSandwichesToggle"),
   showDrinksToggle: document.getElementById("showDrinksToggle"),
   showSoupsToggle: document.getElementById("showSoupsToggle"),
   showSidesToggle: document.getElementById("showSidesToggle"),
+
   sandwichesItemsPerPageInput: document.getElementById("sandwichesItemsPerPageInput"),
   drinksItemsPerPageInput: document.getElementById("drinksItemsPerPageInput"),
   soupsItemsPerPageInput: document.getElementById("soupsItemsPerPageInput"),
   sidesItemsPerPageInput: document.getElementById("sidesItemsPerPageInput"),
+
   sandwichesOrderInput: document.getElementById("sandwichesOrderInput"),
   drinksOrderInput: document.getElementById("drinksOrderInput"),
   soupsOrderInput: document.getElementById("soupsOrderInput"),
   sidesOrderInput: document.getElementById("sidesOrderInput"),
+
+  sandwichesColumnsInput: document.getElementById("sandwichesColumnsInput"),
+  drinksColumnsInput: document.getElementById("drinksColumnsInput"),
+  soupsColumnsInput: document.getElementById("soupsColumnsInput"),
+  sidesColumnsInput: document.getElementById("sidesColumnsInput"),
+
+  sandwichesSecondsInput: document.getElementById("sandwichesSecondsInput"),
+  drinksSecondsInput: document.getElementById("drinksSecondsInput"),
+  soupsSecondsInput: document.getElementById("soupsSecondsInput"),
+  sidesSecondsInput: document.getElementById("sidesSecondsInput"),
+
   hoursMondayEnabled: document.getElementById("hoursMondayEnabled"),
   hoursMondayOpen: document.getElementById("hoursMondayOpen"),
   hoursMondayClose: document.getElementById("hoursMondayClose"),
@@ -57,6 +78,7 @@ const el = {
   hoursSundayEnabled: document.getElementById("hoursSundayEnabled"),
   hoursSundayOpen: document.getElementById("hoursSundayOpen"),
   hoursSundayClose: document.getElementById("hoursSundayClose"),
+
   eyebrowText: document.getElementById("eyebrowText"),
   brandTitle: document.getElementById("brandTitle"),
   brandTagline: document.getElementById("brandTagline"),
@@ -64,14 +86,17 @@ const el = {
   sectionTitle: document.getElementById("sectionTitle"),
   sectionSubtitle: document.getElementById("sectionSubtitle"),
   menuList: document.getElementById("menuList"),
+
   sandwichesList: document.getElementById("sandwichesList"),
   drinksList: document.getElementById("drinksList"),
   soupsList: document.getElementById("soupsList"),
   sidesList: document.getElementById("sidesList"),
+
   addSandwichBtn: document.getElementById("addSandwichBtn"),
   addDrinkBtn: document.getElementById("addDrinkBtn"),
   addSoupBtn: document.getElementById("addSoupBtn"),
   addSideBtn: document.getElementById("addSideBtn"),
+
   editorModal: document.getElementById("editorModal"),
   closeEditor: document.getElementById("closeEditor"),
   editorForm: document.getElementById("editorForm"),
@@ -82,12 +107,10 @@ const el = {
   editorStyle: document.getElementById("editorStyle"),
   editorOptions: document.getElementById("editorOptions"),
   editorAvailable: document.getElementById("editorAvailable"),
+  editorSoldOut: document.getElementById("editorSoldOut"),
   deleteItemBtn: document.getElementById("deleteItemBtn"),
   editorTitle: document.getElementById("editorTitle"),
-  editorSubtitle: document.getElementById("editorSubtitle"),
-  editorDescriptionWrap: document.getElementById("editorDescriptionWrap"),
-  editorStyleWrap: document.getElementById("editorStyleWrap"),
-  editorOptionsWrap: document.getElementById("editorOptionsWrap")
+  editorSubtitle: document.getElementById("editorSubtitle")
 };
 
 init();
@@ -95,11 +118,27 @@ init();
 function init() {
   bindEvents();
   renderAll();
-  startRotation();
+  scheduleRotation();
 }
 
 function bindEvents() {
-  el.settingsHotspot.addEventListener("click", openSettings);
+  const hotspotStart = (event) => {
+    if (event.type === "touchstart") event.preventDefault();
+    clearTimeout(state.hotspotTimer);
+    state.hotspotTimer = setTimeout(openSettings, SETTINGS_HOLD_MS);
+  };
+  const hotspotEnd = () => clearTimeout(state.hotspotTimer);
+
+  el.settingsHotspot.addEventListener("pointerdown", hotspotStart);
+  el.settingsHotspot.addEventListener("pointerup", hotspotEnd);
+  el.settingsHotspot.addEventListener("pointerleave", hotspotEnd);
+  el.settingsHotspot.addEventListener("pointercancel", hotspotEnd);
+  el.settingsHotspot.addEventListener("touchstart", hotspotStart, { passive: false });
+  el.settingsHotspot.addEventListener("touchend", hotspotEnd);
+  el.settingsHotspot.addEventListener("touchcancel", hotspotEnd);
+
+  el.navLeft?.addEventListener("click", rotatePrev);
+  el.navRight?.addEventListener("click", rotateNext);
 
   el.closeSettings.addEventListener("click", closeSettings);
   el.closeEditor.addEventListener("click", closeEditor);
@@ -109,21 +148,14 @@ function bindEvents() {
   el.confirmReset.addEventListener("click", resetToDefaults);
   el.editorForm.addEventListener("submit", saveEditorForm);
   el.deleteItemBtn.addEventListener("click", deleteCurrentItem);
-
-  el.settingsTabs.addEventListener("click", (event) => {
-    const tab = event.target.closest(".tab-btn");
-    if (!tab) return;
-    openTab(tab.dataset.tab);
-  });
+  el.settingsTabs.addEventListener("click", handleTabClick);
 
   [
     [el.addSandwichBtn, "sandwiches"],
     [el.addDrinkBtn, "drinks"],
     [el.addSoupBtn, "soups"],
     [el.addSideBtn, "sides"]
-  ].forEach(([button, type]) => {
-    button.addEventListener("click", () => openEditor(type));
-  });
+  ].forEach(([button, type]) => button.addEventListener("click", () => openEditor(type)));
 
   [
     [el.sandwichesList, "sandwiches"],
@@ -136,6 +168,7 @@ function bindEvents() {
       if (!button) return;
       const id = button.dataset.id;
       if (button.dataset.action === "toggle") toggleAvailability(type, id);
+      if (button.dataset.action === "toggleSoldOut") toggleSoldOut(type, id);
       if (button.dataset.action === "edit") openEditor(type, id);
     });
   });
@@ -146,7 +179,15 @@ function bindEvents() {
       closeSettings();
       el.confirmModal.classList.add("hidden");
     }
+    if (event.key === "ArrowLeft") rotatePrev();
+    if (event.key === "ArrowRight") rotateNext();
   });
+}
+
+function handleTabClick(event) {
+  const tab = event.target.closest(".tab-btn");
+  if (!tab) return;
+  openTab(tab.dataset.tab);
 }
 
 function openSettings() {
@@ -169,13 +210,14 @@ function openTab(name) {
 }
 
 function populateGeneralForm() {
-  const g = state.data.general;
+  const g = normalizeGeneral(state.data.general || {});
   const sectionSettings = getSectionSettings();
 
   el.eyebrowInput.value = g.eyebrow || "";
   el.brandTitleInput.value = g.brandTitle || "";
   el.brandTaglineInput.value = g.brandTagline || "";
   el.rotationSpeedInput.value = g.rotationSpeedSeconds || 12;
+  el.autoRotateInput.checked = g.autoRotate !== false;
   el.fontScaleInput.value = g.fontScale || "normal";
 
   el.showSandwichesToggle.checked = !!g.showPages.sandwiches;
@@ -193,160 +235,187 @@ function populateGeneralForm() {
   el.soupsOrderInput.value = sectionSettings.soups.order;
   el.sidesOrderInput.value = sectionSettings.sides.order;
 
-  const hours = normalizeHours(g.hoursOpen || {});
-  setHoursFormValues(hours);
+  el.sandwichesColumnsInput.value = g.columns.sandwiches;
+  el.drinksColumnsInput.value = g.columns.drinks;
+  el.soupsColumnsInput.value = g.columns.soups;
+  el.sidesColumnsInput.value = g.columns.sides;
+
+  el.sandwichesSecondsInput.value = g.sectionSeconds.sandwiches;
+  el.drinksSecondsInput.value = g.sectionSeconds.drinks;
+  el.soupsSecondsInput.value = g.sectionSeconds.soups;
+  el.sidesSecondsInput.value = g.sectionSeconds.sides;
+
+  setHoursFormValues(normalizeHours(g.hoursOpen));
 }
 
 function saveGeneralSettings() {
-  state.data.general.eyebrow = el.eyebrowInput.value.trim() || "Mt Pulaski, Illinois";
-  state.data.general.brandTitle = el.brandTitleInput.value.trim() || "Market on the Hill";
-  state.data.general.brandTagline = el.brandTaglineInput.value.trim() || "Sandwiches, soups, drinks, and deli favorites";
-  state.data.general.rotationSpeedSeconds = clampNumber(el.rotationSpeedInput.value, 5, 120, 12);
-  state.data.general.fontScale = ["small","normal","large"].includes(el.fontScaleInput.value) ? el.fontScaleInput.value : "normal";
-  state.data.general.showPages = {
-    sandwiches: el.showSandwichesToggle.checked,
-    drinks: el.showDrinksToggle.checked,
-    soups: el.showSoupsToggle.checked,
-    sides: el.showSidesToggle.checked
+  const current = normalizeGeneral(state.data.general || {});
+  state.data.general = {
+    ...current,
+    eyebrow: el.eyebrowInput.value.trim() || "Mt Pulaski, Illinois",
+    brandTitle: el.brandTitleInput.value.trim() || "Market on the Hill",
+    brandTagline: el.brandTaglineInput.value.trim() || "Sandwiches, soups, drinks, and deli favorites",
+    rotationSpeedSeconds: clampNumber(el.rotationSpeedInput.value, 5, 120, 12),
+    autoRotate: !!el.autoRotateInput.checked,
+    fontScale: ["small", "normal", "large"].includes(el.fontScaleInput.value) ? el.fontScaleInput.value : "normal",
+    showPages: {
+      sandwiches: !!el.showSandwichesToggle.checked,
+      drinks: !!el.showDrinksToggle.checked,
+      soups: !!el.showSoupsToggle.checked,
+      sides: !!el.showSidesToggle.checked
+    },
+    sectionSettings: normalizeSectionSettings({
+      sandwiches: {
+        itemsPerPage: clampNumber(el.sandwichesItemsPerPageInput.value, 1, 18, 12),
+        order: clampNumber(el.sandwichesOrderInput.value, 1, 4, 1)
+      },
+      drinks: {
+        itemsPerPage: clampNumber(el.drinksItemsPerPageInput.value, 1, 18, 12),
+        order: clampNumber(el.drinksOrderInput.value, 1, 4, 2)
+      },
+      soups: {
+        itemsPerPage: clampNumber(el.soupsItemsPerPageInput.value, 1, 18, 12),
+        order: clampNumber(el.soupsOrderInput.value, 1, 4, 3)
+      },
+      sides: {
+        itemsPerPage: clampNumber(el.sidesItemsPerPageInput.value, 1, 18, 12),
+        order: clampNumber(el.sidesOrderInput.value, 1, 4, 4)
+      }
+    }),
+    columns: {
+      sandwiches: clampColumnCount(el.sandwichesColumnsInput.value, current.columns.sandwiches),
+      drinks: clampColumnCount(el.drinksColumnsInput.value, current.columns.drinks),
+      soups: clampColumnCount(el.soupsColumnsInput.value, current.columns.soups),
+      sides: clampColumnCount(el.sidesColumnsInput.value, current.columns.sides)
+    },
+    sectionSeconds: {
+      sandwiches: clampNumber(el.sandwichesSecondsInput.value, 5, 120, current.rotationSpeedSeconds),
+      drinks: clampNumber(el.drinksSecondsInput.value, 5, 120, current.rotationSpeedSeconds),
+      soups: clampNumber(el.soupsSecondsInput.value, 5, 120, current.rotationSpeedSeconds),
+      sides: clampNumber(el.sidesSecondsInput.value, 5, 120, current.rotationSpeedSeconds)
+    },
+    hoursOpen: readHoursFormValues()
   };
-  state.data.general.sectionSettings = normalizeSectionSettings({
-    sandwiches: {
-      itemsPerPage: clampNumber(el.sandwichesItemsPerPageInput.value, 1, 18, 12),
-      order: clampNumber(el.sandwichesOrderInput.value, 1, 4, 1)
-    },
-    drinks: {
-      itemsPerPage: clampNumber(el.drinksItemsPerPageInput.value, 1, 18, 12),
-      order: clampNumber(el.drinksOrderInput.value, 1, 4, 2)
-    },
-    soups: {
-      itemsPerPage: clampNumber(el.soupsItemsPerPageInput.value, 1, 18, 12),
-      order: clampNumber(el.soupsOrderInput.value, 1, 4, 3)
-    },
-    sides: {
-      itemsPerPage: clampNumber(el.sidesItemsPerPageInput.value, 1, 18, 12),
-      order: clampNumber(el.sidesOrderInput.value, 1, 4, 4)
-    }
-  });
-  state.data.general.hoursOpen = readHoursFormValues();
 
   saveData();
+  closeSettings();
   state.sectionIndex = 0;
   state.pageIndex = 0;
   renderAll();
-  startRotation();
+  scheduleRotation();
 }
 
 function renderAll() {
+  applyBranding();
+  renderHeaderHours();
   renderDisplay();
   renderAdminLists();
 }
 
-function getSectionSettings() {
-  return normalizeSectionSettings(state.data.general.sectionSettings || {});
+function applyBranding() {
+  const g = normalizeGeneral(state.data.general || {});
+  el.eyebrowText.textContent = g.eyebrow || "";
+  el.brandTitle.textContent = g.brandTitle || "";
+  el.brandTagline.textContent = g.brandTagline || "";
+  document.body.classList.remove("font-small", "font-normal", "font-large");
+  document.body.classList.add(`font-${g.fontScale || "normal"}`);
 }
 
-function normalizeSectionSettings(settings) {
-  const defaults = {
-    sandwiches: { itemsPerPage: 12, order: 1 },
-    drinks: { itemsPerPage: 12, order: 2 },
-    soups: { itemsPerPage: 12, order: 3 },
-    sides: { itemsPerPage: 12, order: 4 }
-  };
-
-  const merged = {
-    sandwiches: { ...defaults.sandwiches, ...(settings.sandwiches || {}) },
-    drinks: { ...defaults.drinks, ...(settings.drinks || {}) },
-    soups: { ...defaults.soups, ...(settings.soups || {}) },
-    sides: { ...defaults.sides, ...(settings.sides || {}) }
-  };
-
-  const usedOrders = new Set();
-  const keys = ["sandwiches", "drinks", "soups", "sides"];
-
-  keys.forEach((key) => {
-    merged[key].itemsPerPage = clampNumber(merged[key].itemsPerPage, 1, 18, defaults[key].itemsPerPage);
-    let order = clampNumber(merged[key].order, 1, 4, defaults[key].order);
-    while (usedOrders.has(order) && order <= 4) order += 1;
-    if (order > 4) {
-      order = [1, 2, 3, 4].find((n) => !usedOrders.has(n)) || defaults[key].order;
-    }
-    merged[key].order = order;
-    usedOrders.add(order);
-  });
-
-  return merged;
+function getSectionSettings() {
+  return normalizeSectionSettings(state.data.general?.sectionSettings || {});
 }
 
 function getDisplaySections() {
-  const show = state.data.general.showPages || {};
+  const g = normalizeGeneral(state.data.general || {});
   const sectionSettings = getSectionSettings();
-  const sections = [];
 
-  if (show.sandwiches) pushSection(sections, "sandwiches", "Sandwiches", "— SANDWICHES —", "Fresh deli sandwiches and house favorites.", state.data.sandwiches, sectionSettings.sandwiches);
-  if (show.drinks) pushSection(sections, "drinks", "Drinks", "— DRINKS —", "Cold and hot beverages for the deli counter.", state.data.drinks, sectionSettings.drinks);
-  if (show.soups) pushSection(sections, "soups", "Soups", "— SOUPS —", "Hot soup options rotating with the rest of the menu.", state.data.soups, sectionSettings.soups);
-  if (show.sides) pushSection(sections, "sides", "Sides", "— SIDES & EXTRAS —", "Quick add-ons, packaged sides, and bakery extras.", state.data.sides, sectionSettings.sides);
-
-  return sections.sort((a, b) => a.order - b.order);
-}
-
-function pushSection(sections, key, title, kicker, subtitle, items, config) {
-  const availableItems = items.filter((item) => item.available);
-  if (!availableItems.length) return;
-  const itemsPerPage = clampNumber(config.itemsPerPage, 1, 18, 8);
-  sections.push({
-    key,
-    title,
-    kicker,
-    subtitle,
-    order: config.order,
-    itemsPerPage,
-    pages: chunk(availableItems, itemsPerPage)
-  });
+  return [
+    {
+      type: "sandwiches",
+      kicker: "— SANDWICHES —",
+      title: "Sandwiches",
+      subtitle: "Fresh deli sandwiches and house favorites.",
+      items: state.data.sandwiches.filter((item) => item.available !== false),
+      itemsPerPage: sectionSettings.sandwiches.itemsPerPage,
+      order: sectionSettings.sandwiches.order,
+      columns: g.columns.sandwiches,
+      seconds: g.sectionSeconds.sandwiches,
+      visible: g.showPages.sandwiches
+    },
+    {
+      type: "drinks",
+      kicker: "— DRINKS —",
+      title: "Drinks",
+      subtitle: "Cold drinks, coffee, and grab-and-go favorites.",
+      items: state.data.drinks.filter((item) => item.available !== false),
+      itemsPerPage: sectionSettings.drinks.itemsPerPage,
+      order: sectionSettings.drinks.order,
+      columns: g.columns.drinks,
+      seconds: g.sectionSeconds.drinks,
+      visible: g.showPages.drinks
+    },
+    {
+      type: "soups",
+      kicker: "— SOUPS —",
+      title: "Soups",
+      subtitle: "Daily soup selections and hot comfort favorites.",
+      items: state.data.soups.filter((item) => item.available !== false),
+      itemsPerPage: sectionSettings.soups.itemsPerPage,
+      order: sectionSettings.soups.order,
+      columns: g.columns.soups,
+      seconds: g.sectionSeconds.soups,
+      visible: g.showPages.soups
+    },
+    {
+      type: "sides",
+      kicker: "— SIDES —",
+      title: "Sides",
+      subtitle: "Chips, deli extras, and quick add-ons.",
+      items: state.data.sides.filter((item) => item.available !== false),
+      itemsPerPage: sectionSettings.sides.itemsPerPage,
+      order: sectionSettings.sides.order,
+      columns: g.columns.sides,
+      seconds: g.sectionSeconds.sides,
+      visible: g.showPages.sides
+    }
+  ]
+    .filter((section) => section.visible)
+    .map((section) => ({
+      ...section,
+      pages: chunk(section.items, section.itemsPerPage || 12)
+    }))
+    .filter((section) => section.pages.length)
+    .sort((a, b) => a.order - b.order);
 }
 
 function renderDisplay() {
   state.sections = getDisplaySections();
-  const g = state.data.general;
-  el.eyebrowText.textContent = g.eyebrow || "Mt Pulaski, Illinois";
-  el.brandTitle.textContent = g.brandTitle || "Market on the Hill";
-  el.brandTagline.textContent = g.brandTagline || "";
-  renderHeaderHours();
-  document.body.classList.remove("font-small", "font-normal", "font-large");
-  document.body.classList.add(`font-${g.fontScale || "normal"}`);
-
   if (!state.sections.length) {
-    el.sectionKicker.textContent = "— DISPLAY —";
-    el.sectionTitle.textContent = "Nothing to display";
-    el.sectionSubtitle.textContent = "Enable a section and mark items available in settings.";
+    el.sectionKicker.textContent = "— MENU —";
+    el.sectionTitle.textContent = "Nothing is currently showing";
+    el.sectionSubtitle.textContent = "Press and hold the hidden top-right corner to open settings.";
     el.menuList.className = "menu-list layout-cards layout-3";
-    el.menuList.innerHTML = `<article class="menu-item empty-card"><div>Use the small settings button in the top-right corner to open admin controls.</div></article>`;
+    el.menuList.innerHTML = '<article class="menu-item empty-card"><div>Enable a section and mark at least one item available.</div></article>';
     return;
   }
 
   if (state.sectionIndex >= state.sections.length) state.sectionIndex = 0;
   const section = state.sections[state.sectionIndex];
   if (state.pageIndex >= section.pages.length) state.pageIndex = 0;
-  const page = section.pages[state.pageIndex];
+  const page = section.pages[state.pageIndex] || [];
 
   el.sectionKicker.textContent = section.kicker;
   el.sectionTitle.textContent = section.title;
   el.sectionSubtitle.textContent = section.subtitle;
-  el.menuList.className = `menu-list layout-cards ${layoutClassForSection(section.itemsPerPage)}`;
+  el.menuList.className = `menu-list layout-cards layout-${section.columns || 3}`;
   el.menuList.innerHTML = page.map(renderMenuCard).join("");
-}
-
-function layoutClassForSection(itemsPerPage) {
-  if (itemsPerPage <= 1) return "layout-1";
-  if (itemsPerPage <= 4) return "layout-2";
-  if (itemsPerPage <= 6) return "layout-3";
-  return "layout-3";
 }
 
 function renderMenuCard(item) {
   const meta = buildMenuMeta(item);
   return `
-    <article class="menu-item">
+    <article class="menu-item ${item.soldOut ? "sold-out" : ""}">
+      ${item.soldOut ? '<div class="sold-out-badge">Sold Out</div>' : ""}
       <div>
         <h3 class="menu-item-title">${escapeHtml(item.name)}</h3>
         <div class="menu-item-copy">${escapeHtml(item.description || "")}</div>
@@ -362,11 +431,34 @@ function buildMenuMeta(item) {
   return parts.join(" • ");
 }
 
-function startRotation() {
+function currentSectionDurationMs() {
+  state.sections = getDisplaySections();
+  const fallback = (normalizeGeneral(state.data.general || {}).rotationSpeedSeconds || 12) * 1000;
+  const section = state.sections[state.sectionIndex];
+  return Math.max(5000, (section?.seconds || fallback / 1000) * 1000);
+}
+
+function scheduleRotation() {
   stopRotation();
+  const g = normalizeGeneral(state.data.general || {});
+  if (g.autoRotate === false) return;
+
+  state.sections = getDisplaySections();
+  if (!state.sections.length) return;
   if (state.sections.length <= 1 && (state.sections[0]?.pages.length || 0) <= 1) return;
-  const ms = (state.data.general.rotationSpeedSeconds || 12) * 1000;
-  state.rotationTimer = setInterval(() => rotateNext(), ms);
+
+  const ms = currentSectionDurationMs();
+  state.rotationDeadline = Date.now() + ms;
+  state.rotationTimer = setTimeout(() => {
+    rotateNext();
+    scheduleRotation();
+  }, ms);
+}
+
+function stopRotation() {
+  if (state.rotationTimer) clearTimeout(state.rotationTimer);
+  state.rotationTimer = null;
+  state.rotationDeadline = null;
 }
 
 function rotateNext() {
@@ -382,12 +474,26 @@ function rotateNext() {
     state.pageIndex = 0;
     state.sectionIndex = (state.sectionIndex + 1) % state.sections.length;
   }
+
   renderDisplay();
+  scheduleRotation();
 }
 
-function stopRotation() {
-  if (state.rotationTimer) clearInterval(state.rotationTimer);
-  state.rotationTimer = null;
+function rotatePrev() {
+  state.sections = getDisplaySections();
+  if (!state.sections.length) return;
+
+  const currentSection = state.sections[state.sectionIndex] || state.sections[0];
+  if (state.pageIndex > 0) {
+    state.pageIndex -= 1;
+  } else {
+    state.sectionIndex = (state.sectionIndex - 1 + state.sections.length) % state.sections.length;
+    const previousSection = state.sections[state.sectionIndex];
+    state.pageIndex = Math.max(0, previousSection.pages.length - 1);
+  }
+
+  renderDisplay();
+  scheduleRotation();
 }
 
 function renderAdminLists() {
@@ -398,39 +504,53 @@ function renderAdminLists() {
 }
 
 function renderAdminList(type, mount, items) {
-  mount.innerHTML = items.map((item) => `
-    <article class="admin-row">
-      <div class="admin-row-head">
-        <div>
-          <h4>${escapeHtml(item.name)}</h4>
-          <p>${escapeHtml(item.description || "")}</p>
-          <p class="admin-meta">${escapeHtml([item.style, item.options].filter(Boolean).join(" • "))}</p>
+  mount.innerHTML = items.map((item) => {
+    const statusClass = item.available === false ? "unavailable" : item.soldOut ? "soldout-badge" : "available";
+    const statusText = item.available === false ? "Hidden" : item.soldOut ? "Sold out" : "Available";
+    return `
+      <article class="admin-row">
+        <div class="admin-row-head">
+          <div>
+            <h4>${escapeHtml(item.name)}</h4>
+            <p>${escapeHtml(item.description || "")}</p>
+            <p class="admin-meta">${escapeHtml([item.style, item.options].filter(Boolean).join(" • "))}</p>
+          </div>
+          <span class="badge ${statusClass}">${statusText}</span>
         </div>
-        <span class="badge ${item.available ? "available" : "unavailable"}">${item.available ? "Available" : "Unavailable"}</span>
-      </div>
-      <div class="action-row">
-        <button class="btn btn-ghost" type="button" data-action="toggle" data-id="${item.id}">${item.available ? "Mark unavailable" : "Mark available"}</button>
-        <button class="btn btn-primary" type="button" data-action="edit" data-id="${item.id}">Edit</button>
-      </div>
-    </article>
-  `).join("") || `<article class="admin-row"><p>No items yet.</p></article>`;
+        <div class="action-row">
+          <button class="btn btn-ghost" type="button" data-action="toggle" data-id="${item.id}">${item.available === false ? "Show on menu" : "Hide from menu"}</button>
+          <button class="btn btn-ghost" type="button" data-action="toggleSoldOut" data-id="${item.id}">${item.soldOut ? "Mark in stock" : "Mark sold out"}</button>
+          <button class="btn btn-primary" type="button" data-action="edit" data-id="${item.id}">Edit</button>
+        </div>
+      </article>`;
+  }).join("") || `<article class="admin-row"><p>No items yet.</p></article>`;
 }
 
 function toggleAvailability(type, id) {
   const item = state.data[type].find((entry) => entry.id === id);
   if (!item) return;
-  item.available = !item.available;
+  item.available = item.available === false ? true : false;
   saveData();
   state.pageIndex = 0;
   renderAll();
-  startRotation();
+  scheduleRotation();
+}
+
+function toggleSoldOut(type, id) {
+  const item = state.data[type].find((entry) => entry.id === id);
+  if (!item) return;
+  item.available = true;
+  item.soldOut = !item.soldOut;
+  saveData();
+  renderAll();
+  scheduleRotation();
 }
 
 function openEditor(type, id = "") {
-  const isNew = !id;
   const source = state.data[type];
+  const isNew = !id;
   const item = isNew
-    ? { id: "", name: "", description: "", style: "", options: "", available: true }
+    ? { id: "", name: "", description: "", style: "", options: "", available: true, soldOut: false }
     : source.find((entry) => entry.id === id);
 
   el.editorType.value = type;
@@ -439,9 +559,11 @@ function openEditor(type, id = "") {
   el.editorDescription.value = item?.description || "";
   el.editorStyle.value = item?.style || "";
   el.editorOptions.value = item?.options || "";
-  el.editorAvailable.checked = item?.available ?? true;
+  el.editorAvailable.checked = item?.available !== false;
+  el.editorSoldOut.checked = !!item?.soldOut;
   el.editorTitle.textContent = isNew ? "Add item" : "Edit item";
   el.editorSubtitle.textContent = `${labelForType(type)} management`;
+  el.deleteItemBtn.classList.toggle("hidden", isNew);
   el.editorModal.classList.remove("hidden");
 }
 
@@ -459,24 +581,21 @@ function saveEditorForm(event) {
     description: el.editorDescription.value.trim(),
     style: el.editorStyle.value.trim(),
     options: el.editorOptions.value.trim(),
-    available: el.editorAvailable.checked
+    available: !!el.editorAvailable.checked,
+    soldOut: !!el.editorSoldOut.checked
   };
-
   if (!payload.name) return;
 
   const list = state.data[type];
   const index = list.findIndex((item) => item.id === payload.id);
-  if (index >= 0) {
-    list[index] = payload;
-  } else {
-    list.push(payload);
-  }
+  if (index >= 0) list[index] = payload;
+  else list.push(payload);
 
   saveData();
   closeEditor();
   state.pageIndex = 0;
   renderAll();
-  startRotation();
+  scheduleRotation();
 }
 
 function deleteCurrentItem() {
@@ -488,11 +607,12 @@ function deleteCurrentItem() {
   closeEditor();
   state.pageIndex = 0;
   renderAll();
-  startRotation();
+  scheduleRotation();
 }
 
 function resetToDefaults() {
   localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem("market-on-the-hill-menu-v1");
   state.data = clone(window.DEFAULT_MENU_DATA);
   state.sectionIndex = 0;
   state.pageIndex = 0;
@@ -500,7 +620,7 @@ function resetToDefaults() {
   closeEditor();
   closeSettings();
   renderAll();
-  startRotation();
+  scheduleRotation();
 }
 
 function saveData() {
@@ -509,7 +629,7 @@ function saveData() {
 
 function loadData() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("market-on-the-hill-menu-v1");
     if (!raw) return clone(window.DEFAULT_MENU_DATA);
     return mergeDefaults(JSON.parse(raw), window.DEFAULT_MENU_DATA);
   } catch {
@@ -519,24 +639,70 @@ function loadData() {
 
 function mergeDefaults(data, defaults) {
   return {
-    general: {
+    general: normalizeGeneral({
       ...defaults.general,
-      ...(data.general || {}),
-      showPages: { ...defaults.general.showPages, ...(data.general?.showPages || {}) },
-      sectionSettings: normalizeSectionSettings({
-        ...(defaults.general.sectionSettings || {}),
-        ...(data.general?.sectionSettings || {})
-      }),
-      hoursOpen: normalizeHours({
-        ...(defaults.general.hoursOpen || {}),
-        ...(data.general?.hoursOpen || {})
-      })
-    },
-    sandwiches: Array.isArray(data.sandwiches) ? data.sandwiches : clone(defaults.sandwiches),
-    drinks: Array.isArray(data.drinks) ? data.drinks : clone(defaults.drinks),
-    soups: Array.isArray(data.soups) ? data.soups : clone(defaults.soups),
-    sides: Array.isArray(data.sides) ? data.sides : clone(defaults.sides)
+      ...(data.general || {})
+    }),
+    sandwiches: normalizeItemsArray(data.sandwiches, defaults.sandwiches),
+    drinks: normalizeItemsArray(data.drinks, defaults.drinks),
+    soups: normalizeItemsArray(data.soups, defaults.soups),
+    sides: normalizeItemsArray(data.sides, defaults.sides)
   };
+}
+
+function normalizeGeneral(general) {
+  const defaults = window.DEFAULT_MENU_DATA.general;
+  return {
+    eyebrow: general.eyebrow || defaults.eyebrow,
+    brandTitle: general.brandTitle || defaults.brandTitle,
+    brandTagline: general.brandTagline || defaults.brandTagline,
+    rotationSpeedSeconds: clampNumber(general.rotationSpeedSeconds, 5, 120, defaults.rotationSpeedSeconds),
+    autoRotate: general.autoRotate !== false,
+    fontScale: ["small", "normal", "large"].includes(general.fontScale) ? general.fontScale : defaults.fontScale,
+    showPages: {
+      ...defaults.showPages,
+      ...(general.showPages || {})
+    },
+    hoursOpen: normalizeHours({
+      ...(defaults.hoursOpen || {}),
+      ...(general.hoursOpen || {})
+    }),
+    sectionSettings: normalizeSectionSettings({
+      ...(defaults.sectionSettings || {}),
+      ...(general.sectionSettings || {})
+    }),
+    columns: {
+      ...defaults.columns,
+      ...(general.columns || {})
+    },
+    sectionSeconds: {
+      ...defaults.sectionSeconds,
+      ...(general.sectionSeconds || {})
+    }
+  };
+}
+
+function normalizeItemsArray(items, fallback) {
+  const source = Array.isArray(items) ? items : clone(fallback);
+  return source.map((item) => ({
+    ...item,
+    available: item.available !== false,
+    soldOut: !!item.soldOut
+  }));
+}
+
+function normalizeSectionSettings(sectionSettings) {
+  const defaults = window.DEFAULT_MENU_DATA.general.sectionSettings;
+  const normalized = {};
+  SECTION_TYPES.forEach((type, index) => {
+    const incoming = sectionSettings?.[type] || {};
+    const fallback = defaults[type] || { itemsPerPage: 12, order: index + 1 };
+    normalized[type] = {
+      itemsPerPage: clampNumber(incoming.itemsPerPage, 1, 18, fallback.itemsPerPage),
+      order: clampNumber(incoming.order, 1, 4, fallback.order)
+    };
+  });
+  return normalized;
 }
 
 function normalizeHours(hours) {
@@ -549,7 +715,6 @@ function normalizeHours(hours) {
     saturday: { enabled: true, open: "10:00", close: "18:00" },
     sunday: { enabled: true, open: "10:00", close: "14:00" }
   };
-
   const normalized = {};
   Object.entries(defaults).forEach(([day, value]) => {
     const incoming = hours?.[day] || {};
@@ -567,7 +732,7 @@ function normalizeTimeValue(value, fallback) {
 }
 
 function setHoursFormValues(hours) {
-  ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"].forEach((day) => {
+  ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"].forEach((day) => {
     const proper = capitalize(day);
     el[`hours${proper}Enabled`].checked = !!hours[day].enabled;
     el[`hours${proper}Open`].value = hours[day].open;
@@ -577,7 +742,7 @@ function setHoursFormValues(hours) {
 
 function readHoursFormValues() {
   const hours = {};
-  ["monday","tuesday","wednesday","thursday","friday","saturday","sunday"].forEach((day) => {
+  ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"].forEach((day) => {
     const proper = capitalize(day);
     hours[day] = {
       enabled: !!el[`hours${proper}Enabled`].checked,
@@ -590,16 +755,14 @@ function readHoursFormValues() {
 
 function renderHeaderHours() {
   const hours = normalizeHours(state.data.general.hoursOpen || {});
-  const columnOneDays = ["monday", "tuesday", "wednesday", "thursday"];
-  const columnTwoDays = ["friday", "saturday", "sunday"];
-  const columnOne = columnOneDays.filter((day) => hours[day].enabled);
-  const columnTwo = columnTwoDays.filter((day) => hours[day].enabled);
+  const columnOne = ["monday", "tuesday", "wednesday", "thursday"].filter((day) => hours[day].enabled);
+  const columnTwo = ["friday", "saturday", "sunday"].filter((day) => hours[day].enabled);
 
-  const renderColumn = (title, days,showTitle = true) => {
+  const renderColumn = (title, days, showTitle = true) => {
     if (!days.length) return "";
     return `
       <div class="hours-display-column">
-        <div class="hours-display-title">${title}</div>
+        <div class="hours-display-title ${showTitle ? "" : "hours-display-title-empty"}">${showTitle ? title : ""}</div>
         ${days.map((day) => `
           <div class="hours-display-row">
             <span class="hours-display-day">${capitalize(day)}</span>
@@ -609,8 +772,7 @@ function renderHeaderHours() {
       </div>`;
   };
 
-  const markup = [renderColumn("Hours Open", columnOne), renderColumn("", columnTwo)].join(" ");
-  el.headerHours.innerHTML = markup || '<div class="hours-display-empty">Set hours in settings</div>';
+  el.headerHours.innerHTML = [renderColumn("Hours Open", columnOne, true), renderColumn("", columnTwo, false)].join(" ") || '<div class="hours-display-empty">Set hours in settings</div>';
 }
 
 function formatDisplayTime(value) {
@@ -637,7 +799,7 @@ function uid(prefix) {
 
 function chunk(items, size) {
   const out = [];
-  for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size));
+  for (let index = 0; index < items.length; index += size) out.push(items.slice(index, index + size));
   return out;
 }
 
@@ -645,6 +807,11 @@ function clampNumber(value, min, max, fallback) {
   const num = Number(value);
   if (Number.isNaN(num)) return fallback;
   return Math.min(max, Math.max(min, num));
+}
+
+function clampColumnCount(value, fallback) {
+  const num = Number(value);
+  return num === 4 ? 4 : num === 3 ? 3 : fallback || 3;
 }
 
 function escapeHtml(value) {

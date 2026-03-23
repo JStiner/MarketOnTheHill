@@ -659,3 +659,132 @@ body.font-large .hero-copy p { font-size: clamp(1.04rem, 1.28vw, 1.24rem); }
     grid-template-columns: 1fr;
   }
 }
+
+
+.hours-display-title-empty {
+  visibility: hidden;
+}
+
+.menu-item.sold-out {
+  opacity: 0.82;
+  position: relative;
+}
+
+.menu-item.sold-out .menu-item-title,
+.menu-item.sold-out .menu-item-copy,
+.menu-item.sold-out .menu-item-meta {
+  text-decoration: line-through;
+}
+
+.sold-out-badge,
+.badge.soldout-badge {
+  background: #5c1e28;
+  color: var(--white);
+}
+
+.sold-out-badge {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  z-index: 2;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03rem;
+  text-transform: uppercase;
+}
+
+.nav-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 15%;
+  max-width: 120px;
+  z-index: 5;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(255,255,255,0.08);
+}
+
+.nav-zone.left { left: 0; }
+.nav-zone.right { right: 0; }
+
+.settings-hotspot {
+  z-index: 50;
+  width: 84px;
+  height: 84px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.settings-hotspot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.settings-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.settings-field input[type="checkbox"] {
+  width: auto;
+  transform: scale(1.15);
+}
+
+.section-settings-grid-merged {
+  grid-template-columns: minmax(0, 1.5fr) 70px 85px 70px 80px 90px;
+}
+
+.section-settings-grid-merged select,
+.section-settings-grid-merged input[type="number"] {
+  text-align: center;
+}
+
+.empty-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  text-align: center;
+}
+
+@media (max-width: 980px) {
+  .brand-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-hours {
+    width: 100%;
+    padding: 0 0.2rem 0.2rem;
+    text-align: left;
+  }
+}
+
+@media (max-width: 800px) {
+  .section-settings-grid-merged {
+    grid-template-columns: minmax(0, 1fr) 58px 76px 58px 68px 80px;
+  }
+
+  .settings-hotspot {
+    width: 74px;
+    height: 74px;
+  }
+}
+
+@media (max-width: 560px) {
+  .section-settings-grid-merged {
+    grid-template-columns: minmax(0, 1fr) 54px 68px 54px 64px 72px;
+    gap: 0.35rem;
+    font-size: 0.84rem;
+  }
+
+  .hours-display-column:nth-child(2) .hours-display-title {
+    display: none;
+  }
+}

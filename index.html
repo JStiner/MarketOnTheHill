@@ -8,22 +8,16 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <button id="settingsHotspot" class="settings-hotspot" aria-label="Open settings" title="Settings"></button>
+  <button id="settingsHotspot" class="settings-hotspot" aria-label="Open settings" title="Press and hold for settings"></button>
 
   <div class="screen-shell">
     <header class="brand-header">
-      <div class="header-side-dots" aria-hidden="true">
-        <span class="dot dot-light"></span>
-        <span class="dot dot-gold"></span>
-        <span class="dot dot-light"></span>
-      </div>
-
-      <div class="brand-center">
-     <img
-  src="/MarketOnTheHill/assets/market-on-the-hill-logo.png?v=1"
-  alt="Market on the Hill logo"
-  class="brand-logo"
-/>
+      <div class="brand-center brand-center-market">
+        <img
+          src="/MarketOnTheHill/assets/market-on-the-hill-logo.png?v=1"
+          alt="Market on the Hill logo"
+          class="brand-logo"
+        />
         <div class="brand-copy">
           <div class="eyebrow" id="eyebrowText">Mt Pulaski, Illinois</div>
           <h1 id="brandTitle">Market on the Hill</h1>
@@ -47,6 +41,9 @@
 
         <div id="menuList" class="menu-list" aria-live="polite"></div>
       </section>
+
+      <div id="navLeft" class="nav-zone left" aria-label="Previous section"></div>
+      <div id="navRight" class="nav-zone right" aria-label="Next section"></div>
     </main>
   </div>
 
@@ -85,8 +82,12 @@
               <input id="brandTaglineInput" type="text" />
             </label>
             <label>
-              <span>Rotation speed (seconds)</span>
+              <span>Default rotation speed (seconds)</span>
               <input id="rotationSpeedInput" type="number" min="5" max="120" step="1" />
+            </label>
+            <label class="settings-field">
+              <span>Auto rotate</span>
+              <input id="autoRotateInput" type="checkbox" />
             </label>
             <label>
               <span>Word size</span>
@@ -102,31 +103,61 @@
             <h3>Section display settings</h3>
             <p class="settings-note">Recommended maximum: 12 items per panel.</p>
 
-            <div class="section-settings-grid">
+            <div class="section-settings-grid section-settings-grid-merged">
               <div class="section-settings-head">Section</div>
               <div class="section-settings-head">Show</div>
-              <div class="section-settings-head">Items / panel</div>
+              <div class="section-settings-head">Items</div>
               <div class="section-settings-head">Order</div>
+              <div class="section-settings-head">Cols</div>
+              <div class="section-settings-head">Seconds</div>
 
               <div class="section-settings-label">Sandwiches</div>
               <div><input id="showSandwichesToggle" type="checkbox" /></div>
               <div><input id="sandwichesItemsPerPageInput" type="number" min="1" max="18" step="1" /></div>
               <div><input id="sandwichesOrderInput" type="number" min="1" max="4" step="1" /></div>
+              <div>
+                <select id="sandwichesColumnsInput">
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
+              <div><input id="sandwichesSecondsInput" type="number" min="5" max="120" step="1" /></div>
 
               <div class="section-settings-label">Drinks</div>
               <div><input id="showDrinksToggle" type="checkbox" /></div>
               <div><input id="drinksItemsPerPageInput" type="number" min="1" max="18" step="1" /></div>
               <div><input id="drinksOrderInput" type="number" min="1" max="4" step="1" /></div>
+              <div>
+                <select id="drinksColumnsInput">
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
+              <div><input id="drinksSecondsInput" type="number" min="5" max="120" step="1" /></div>
 
               <div class="section-settings-label">Soups</div>
               <div><input id="showSoupsToggle" type="checkbox" /></div>
               <div><input id="soupsItemsPerPageInput" type="number" min="1" max="18" step="1" /></div>
               <div><input id="soupsOrderInput" type="number" min="1" max="4" step="1" /></div>
+              <div>
+                <select id="soupsColumnsInput">
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
+              <div><input id="soupsSecondsInput" type="number" min="5" max="120" step="1" /></div>
 
               <div class="section-settings-label">Sides</div>
               <div><input id="showSidesToggle" type="checkbox" /></div>
               <div><input id="sidesItemsPerPageInput" type="number" min="1" max="18" step="1" /></div>
               <div><input id="sidesOrderInput" type="number" min="1" max="4" step="1" /></div>
+              <div>
+                <select id="sidesColumnsInput">
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </select>
+              </div>
+              <div><input id="sidesSecondsInput" type="number" min="5" max="120" step="1" /></div>
             </div>
           </div>
 
@@ -159,6 +190,7 @@
               </div>
 
               <div class="hours-settings-column">
+                <div class="hours-settings-column-title hours-settings-column-title-empty">&nbsp;</div>
 
                 <div class="hours-row">
                   <label class="hours-day"><input id="hoursFridayEnabled" type="checkbox" /> <span>Friday</span></label>
@@ -240,24 +272,29 @@
           <input id="editorName" type="text" required />
         </label>
 
-        <label id="editorDescriptionWrap">
+        <label>
           <span>Description / what’s on it</span>
           <textarea id="editorDescription" rows="4"></textarea>
         </label>
 
-        <label id="editorStyleWrap">
+        <label>
           <span>Style / category</span>
           <input id="editorStyle" type="text" />
         </label>
 
-        <label id="editorOptionsWrap">
+        <label>
           <span>Bread / options / extras</span>
           <input id="editorOptions" type="text" />
         </label>
 
         <label class="switch-row">
-          <span>Available</span>
+          <span>Show on menu</span>
           <input id="editorAvailable" type="checkbox" />
+        </label>
+
+        <label class="switch-row">
+          <span>Sold out</span>
+          <input id="editorSoldOut" type="checkbox" />
         </label>
 
         <div class="action-row">
@@ -278,8 +315,8 @@
         </div>
       </div>
       <div class="action-row">
-        <button id="confirmReset" class="btn btn-danger" type="button">Yes, do it</button>
-        <button id="cancelReset" class="btn btn-ghost" type="button">No, don't do it</button>
+        <button id="cancelReset" class="btn btn-ghost" type="button">Cancel</button>
+        <button id="confirmReset" class="btn btn-danger" type="button">Reset</button>
       </div>
     </div>
   </div>
