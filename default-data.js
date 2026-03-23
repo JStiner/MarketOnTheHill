@@ -2,25 +2,28 @@ window.DEFAULT_MENU_DATA = {
   general: {
     eyebrow: "Mt Pulaski, Illinois",
     brandTitle: "Market on the Hill",
-    brandTagline: "Sandwiches, soups, drinks, and deli favorites",
+    brandTagline: "Coffee & Deli Order Online",
     rotationSpeedSeconds: 12,
     autoRotate: true,
     fontScale: "normal",
     showPages: {
       sandwiches: true,
       drinks: true,
+      coffee: true,
       soups: true,
       sides: true
     },
     columns: {
       sandwiches: 3,
       drinks: 3,
+      coffee: 3,
       soups: 3,
       sides: 3
     },
     sectionSeconds: {
       sandwiches: 12,
       drinks: 12,
+      coffee: 12,
       soups: 12,
       sides: 12
     },
@@ -36,89 +39,153 @@ window.DEFAULT_MENU_DATA = {
     sectionSettings: {
       sandwiches: { itemsPerPage: 12, order: 1 },
       drinks: { itemsPerPage: 12, order: 2 },
-      soups: { itemsPerPage: 12, order: 3 },
-      sides: { itemsPerPage: 12, order: 4 }
+      coffee: { itemsPerPage: 12, order: 3 },
+      soups: { itemsPerPage: 12, order: 4 },
+      sides: { itemsPerPage: 12, order: 5 }
     }
   },
   sandwiches: [
-    {
-      id: "sandwich-turkey-club",
-      name: "Turkey Club",
-      description: "Roasted turkey, bacon, lettuce, tomato, and mayo.",
-      style: "Cold deli favorite",
-      options: "White, wheat, or croissant",
-      available: true
-    },
-    {
-      id: "sandwich-ham-swiss",
-      name: "Ham & Swiss",
-      description: "Black forest ham, Swiss, lettuce, tomato, and deli mustard.",
-      style: "Classic cold sandwich",
-      options: "White or marble rye",
-      available: true
-    },
-    {
-      id: "sandwich-italian",
-      name: "Italian",
-      description: "Salami, capicola, provolone, lettuce, tomato, onion, and Italian dressing.",
-      style: "Deli specialty",
-      options: "Hoagie roll or wheat sub bun",
+        {
+      id: "sandwich-blt",
+      name: "BLT Sandwich",
+      price: "$5.99",
+      description: "Crispy bacon, fresh lettuce, tomatoes, and your choice of bread and toppings!",
+      style: "Classic deli",
+      options: "Choice of bread and toppings",
       available: true
     },
     {
       id: "sandwich-chicken-salad",
-      name: "Chicken Salad Croissant",
-      description: "House chicken salad with lettuce and sliced tomato.",
-      style: "House made",
-      options: "Croissant or wheatberry bread",
+      name: "Chicken Salad Sandwich",
+      price: "$7.99",
+      description: "Chicken salad with your choice of bread, cheese and toppings.",
+      style: "Classic deli",
+      options: "Choice of bread, cheese and toppings",
       available: true
     },
     {
-      id: "sandwich-roast-beef-cheddar",
-      name: "Roast Beef & Cheddar",
-      description: "Roast beef, sharp cheddar, red onion, lettuce, and horseradish mayo.",
-      style: "Hearty favorite",
-      options: "Kaiser roll or marble rye",
+      id: "sandwich-tom-ham-turkey",
+      name: "The Tom - Ham & Turkey",
+      price: "$7.99",
+      description: "Freshly sliced deli turkey and ham with your choice bread, cheese and toppings.",
+      style: "House sandwich",
+      options: "Choice of bread, cheese and toppings",
       available: true
     },
     {
-      id: "sandwich-blt",
-      name: "BLT",
-      description: "Crisp bacon, lettuce, tomato, and mayo.",
-      style: "Simple classic",
-      options: "White, wheat, or toasted sourdough",
+      id: "sandwich-kimmy-turkey",
+      name: "The Kimmy - Turkey",
+      price: "$6.99",
+      description: "Freshly sliced deli turkey sandwich from the Square online menu.",
+      style: "House sandwich",
+      options: "Choice of bread, cheese and toppings",
       available: true
     },
     {
-      id: "sandwich-tuna-melt",
-      name: "Tuna Melt",
-      description: "Tuna salad, cheddar, and tomato toasted until warm.",
-      style: "Warm deli favorite",
-      options: "Sourdough or marble rye",
+      id: "sandwich-boodah-ham",
+      name: "The Boodah - Ham Sub",
+      price: "$6.99",
+      description: "Freshly sliced deli ham with your choice of bread, cheese and toppings.",
+      style: "Deli favorite",
+      options: "Choice of bread, cheese and toppings",
       available: true
     },
     {
-      id: "sandwich-veggie",
-      name: "Garden Veggie",
-      description: "Lettuce, tomato, cucumber, onion, provolone, and herb spread.",
-      style: "Vegetarian option",
-      options: "Wheat, sourdough, or wrap",
+      id: "sandwich-saladino-Ham-Turkey-Salami",
+      name: "The Saladino - Ham, Turkey, & Salami",
+      price: "$8.99",
+      description: "Freshly sliced ham, turkey and salami with your choice of bread, cheese, and toppings.",
+      style: "Signature sandwich",
+      options: "Choice of bread, cheese and toppings",
       available: true
     },
     {
-      id: "sandwich-ham-turkey-combo",
-      name: "Ham & Turkey Combo",
-      description: "Ham, turkey, Swiss, lettuce, tomato, and mayo.",
-      style: "Deli combo",
-      options: "White, wheat, or croissant",
+      id: "sandwich-coulter-salami",
+      name: "The Coulter - Salami Sub",
+      price: "$6.99",
+      description: "Deli salami with your choice of bread, cheese, and toppings.",
+      style: "House sandwich",
+      options: "Choice of bread, cheese and toppings",
       available: true
     },
     {
-      id: "sandwich-meatball-sub",
-      name: "Meatball Sub",
-      description: "Meatballs, marinara, and melted provolone served hot.",
+      id: "sandwich-club-ham-turkeyt-bacon",
+      name: "The Club - Ham, Turkey, & Bacon",
+      price: "$8.99",
+      description: "Freshly sliced deli turkey, crispy bacon and ranch with your choice of bread, cheese and toppings.",
+      style: "Deli favorite",
+      options: "Choice of bread, cheese and toppings",
+      available: true
+    },
+    {
+      id: "sandwich-hilltopper-ham-salami-pepperoni",
+      name: "The Hilltopper - Ham, Salami, & Pepperoni",
+      price: "$8.99",
+      description: "Ham, salami and pepperoni with your choice of bread, cheese and toppings.",
+      style: "Signature sandwich",
+      options: "Choice of bread, cheese and toppings",
+      available: true
+    },
+    {
+      id: "sandwich-turkey-bacon-ranch",
+      name: "Turkey Bacon Ranch",
+      price: "$7.99",
+      description: "Freshly sliced deli turkey, crispy bacon and ranch with your choice of bread, cheese and toppings.",
+      style: "Popular sandwich",
+      options: "Choice of bread, cheese and toppings",
+      available: true
+    },
+    {
+      id: "sandwich-sourdough-sarah",
+      name: "The Sourdough Sarah",
+      price: "$7.99",
+      description: "Buttered and grilled sourdough bread, ham, turkey, cheddar cheese, pickles and our super secret sauce.",
+      style: "House sandwich",
+      options: "Choice of bread, cheese and toppings",
+      available: true
+    },
+    {
+      id: "sandwich-chopped-italian",
+      name: "Chopped Italian Deli Sandwich",
+      price: "$8.99",
+      description: "Iceberg lettuce, pepperoncini, red onion, tomato, ham, pepperoni, & salami chopped with herbs and dressing.",
+      style: "Popular sandwich",
+      options: "Choice of bread, cheese and toppings",
+      available: true
+    },
+    {
+      id: "sandwich-autumn-club",
+      name: "The Autumn Club",
+      price: "$7.99",
+      description: "Oven roasted turkey, crispy bacon, melty cheddar cheese, cran-maro and spring mix on a buttered and grilled ciabatta bun.",
+      style: "House sandwich",
+      options: "Choice of bread, cheese and toppings",
+      available: true
+    },    {
+      id: "sandwich-grilled-cheese-sandwich",
+      name: "Grilled Cheese Sandwich",
+      price: "$3.59",
+      description: "Sourdough bread buttered and grilled to crispy perfection with American and cheddar cheese.",
       style: "Hot sandwich",
-      options: "Toasted hoagie roll",
+      options: "Choice of bread, cheese and toppings",
+      available: true
+    },
+    {
+      id: "sandwich-sausage-egg-cheese",
+      name: "Sausage, Egg And Cheese Breakfast Sandwich",
+      price: "$6.99",
+      description: "Sausage patty, egg, and your choice of bread and cheese.",
+      style: "Breakfast sandwich",
+      options: "Choice of bread, cheese and toppings",
+      available: true
+    },
+      {
+      id: "sandwich-egg-cheese",
+      name: "Egg And Cheese Breakfast Sandwich",
+      price: "$4.99",
+      description: "Fried egg, and your choice of bread and cheese.",
+      style: "Breakfast sandwich",
+      options: "Choice of bread, cheese and toppings",
       available: true
     }
   ],
@@ -126,6 +193,7 @@ window.DEFAULT_MENU_DATA = {
     {
       id: "drink-fountain",
       name: "Fountain Drinks",
+      price: "",
       description: "Self-serve cold drinks available near checkout.",
       style: "Cold beverages",
       options: "Small, medium, or large",
@@ -134,6 +202,7 @@ window.DEFAULT_MENU_DATA = {
     {
       id: "drink-iced-tea",
       name: "Fresh Brewed Iced Tea",
+      price: "$2.50",
       description: "Sweet or unsweet with lemon available.",
       style: "House beverage",
       options: "Cup or grab-and-go bottle",
@@ -142,38 +211,43 @@ window.DEFAULT_MENU_DATA = {
     {
       id: "drink-lemonade",
       name: "Market Lemonade",
+      price: "$2.50",
       description: "Bright house lemonade served chilled.",
       style: "Seasonal favorite",
       options: "Regular or strawberry",
       available: true
     },
     {
-      id: "drink-coffee",
-      name: "Fresh Coffee",
-      description: "Hot drip coffee available all day.",
-      style: "Hot beverages",
-      options: "Regular or decaf",
+      id: "drink-bottled-soda",
+      name: "Bottled Soda",
+      price: "$2.50",
+      description: "Grab-and-go bottled soda stocked in the cooler.",
+      style: "Cooler favorite",
+      options: "Rotating flavors",
       available: true
     },
     {
-      id: "drink-cold-brew",
-      name: "Cold Brew Coffee",
-      description: "Smooth chilled coffee poured over ice.",
-      style: "Coffee bar",
-      options: "Black, vanilla, or mocha",
+      id: "drink-sports-drink",
+      name: "Sports Drinks",
+      price: "$2.50",
+      description: "Cold sports drinks ready to grab from the cooler.",
+      style: "Grab-and-go",
+      options: "Rotating flavors",
       available: true
     },
     {
-      id: "drink-hot-tea",
-      name: "Hot Tea",
-      description: "Assorted tea bags with hot water available at the counter.",
-      style: "Hot beverages",
-      options: "Black, green, or herbal",
+      id: "drink-juice",
+      name: "Chilled Juice",
+      price: "$2.50",
+      description: "Single-serve juices available in the deli cooler.",
+      style: "Cooler staple",
+      options: "Orange, apple, or seasonal",
       available: true
     },
     {
       id: "drink-bottled-water",
       name: "Bottled Water",
+      price: "$2.50",
       description: "Grab-and-go chilled bottled water.",
       style: "Cooler staple",
       options: "Single bottle",
@@ -182,6 +256,7 @@ window.DEFAULT_MENU_DATA = {
     {
       id: "drink-orange-juice",
       name: "Orange Juice",
+      price: "$2.50",
       description: "Chilled orange juice ready to grab from the cooler.",
       style: "Breakfast favorite",
       options: "Small bottle",
@@ -190,6 +265,7 @@ window.DEFAULT_MENU_DATA = {
     {
       id: "drink-chocolate-milk",
       name: "Chocolate Milk",
+      price: "$2.50",
       description: "Cold bottled chocolate milk from the deli cooler.",
       style: "Kid favorite",
       options: "Single bottle",
@@ -198,91 +274,95 @@ window.DEFAULT_MENU_DATA = {
     {
       id: "drink-sparkling-water",
       name: "Sparkling Water",
+      price: "$2.50",
       description: "Refreshing canned sparkling water with rotating flavors.",
       style: "Light refreshment",
       options: "Lemon, lime, or berry",
       available: true
     }
   ],
+  coffee: [
+    {
+      id: "coffee-house",
+      name: "Fresh Brewed Coffee",
+      price: "large 2.49",
+      description: "Hot drip coffee available daily at the deli counter.",
+      style: "Hot coffee",
+      options: "Regular or decaf",
+      available: true
+    },
+    {
+      id: "coffee-latte",
+      name: "Latte",
+      price: "large $4.39 / Small $3.99",
+      description: "Espresso with cold milk over ice. Add any syrup for an extra sweetness.",
+      style: "Coffee bar favorite",
+      options: "Hot or iced",
+      available: true
+    },
+    {
+      id: "coffee-mocha",
+      name: "Mocha",
+      price: "Large $4.79 / Small $4.39",
+      description: "Chocolate and coffee blended into a café-style drink.",
+      style: "Sweet coffee",
+      options: "Hot or iced",
+      available: true
+    },
+    {
+      id: "coffee-hot-tea",
+      name: "Hot Tea",
+      price: "$3.99",
+      description: "Assorted tea bags available with hot water at the counter.",
+      style: "Hot beverage",
+      options: "Black, green, or herbal",
+      available: true
+    }
+  ],
   soups: [
     {
-      id: "soup-chicken-noodle",
-      name: "Chicken Noodle",
-      description: "Comforting broth with chicken, noodles, carrots, and celery.",
-      style: "Daily staple",
-      options: "Cup or bowl",
+      id: "soup-daily",
+      name: "Daily Soup",
+      price: "$6.99",
+      description: "Rotating daily soup selection from the Square online menu.",
+      style: "Square online menu",
+      options: "Changes by day",
       available: true
     },
     {
-      id: "soup-broccoli-cheddar",
-      name: "Broccoli Cheddar",
-      description: "Creamy cheddar soup with broccoli florets.",
-      style: "Creamy soup",
-      options: "Cup or bowl",
+      id: "soup-loaded-potato",
+      name: "Loaded Potato Soup",
+      price: "$6.99",
+      description: "Loaded potato soup appears in Market on the Hill's published specials and social posts.",
+      style: "Frequent special",
+      options: "When available",
       available: true
     },
     {
-      id: "soup-potato",
-      name: "Loaded Baked Potato",
-      description: "Creamy potato soup with bacon, cheddar, and chives.",
-      style: "Hearty soup",
-      options: "Cup or bowl",
+      id: "soup-white-bean-bacon",
+      name: "White Bean Soup with Bacon",
+      price: "$6.99",
+      description: "White bean soup with bacon appears in published specials.",
+      style: "Frequent special",
+      options: "When available",
       available: true
     },
     {
-      id: "soup-chili",
-      name: "Homestyle Chili",
-      description: "Beef chili with beans and a slow-simmered tomato base.",
-      style: "House favorite",
-      options: "Cup, bowl, or add crackers",
+      id: "soup-zuppa-toscana",
+      name: "Zuppa Toscana Soup",
+      price: "$6.99",
+      description: "Zuppa Toscana appears in published weekly soup specials.",
+      style: "Frequent special",
+      options: "When available",
       available: true
     },
     {
-      id: "soup-tomato-basil",
-      name: "Tomato Basil",
-      description: "Rich tomato soup finished with basil and cream.",
-      style: "Comfort classic",
-      options: "Cup or bowl",
-      available: true
-    },
-    {
-      id: "soup-vegetable-beef",
-      name: "Vegetable Beef",
-      description: "Savory beef broth with vegetables and tender beef.",
-      style: "Hearty soup",
-      options: "Cup or bowl",
-      available: true
-    },
-    {
-      id: "soup-clam-chowder",
-      name: "Clam Chowder",
-      description: "Creamy chowder with potatoes and clam flavor.",
-      style: "Creamy soup",
-      options: "Cup or bowl",
-      available: true
-    },
-    {
-      id: "soup-minestrone",
-      name: "Minestrone",
-      description: "Tomato broth with pasta, beans, and vegetables.",
-      style: "Vegetarian soup",
-      options: "Cup or bowl",
-      available: true
-    },
-    {
-      id: "soup-chicken-dumpling",
-      name: "Chicken & Dumpling",
-      description: "Thick comforting soup with chicken and soft dumplings.",
-      style: "Homestyle soup",
-      options: "Cup or bowl",
-      available: true
-    },
-    {
-      id: "soup-taco",
-      name: "Taco Soup",
-      description: "Tomato-based soup with beef, beans, and southwest flavor.",
-      style: "Rotating special",
-      options: "Cup or bowl",
+      id: "soup-french-onion",
+      name: "French Onion Soup",
+      price: "$6.99",
+      description: "French onion soup appears in published specials.",
+      style: "Frequent special",
+      options: "When available",
       available: true
     }
   ],
@@ -290,6 +370,7 @@ window.DEFAULT_MENU_DATA = {
     {
       id: "side-pasta-salad",
       name: "Pasta Salad",
+      price: "$3.99 /Lbs",
       description: "Rotini pasta with vegetables in Italian dressing.",
       style: "Chilled side",
       options: "Small or regular",
@@ -298,6 +379,7 @@ window.DEFAULT_MENU_DATA = {
     {
       id: "side-potato-salad",
       name: "Potato Salad",
+      price: "$3.99 /Lbs",
       description: "Traditional deli potato salad.",
       style: "Chilled side",
       options: "Small or regular",
@@ -306,6 +388,7 @@ window.DEFAULT_MENU_DATA = {
     {
       id: "side-chips",
       name: "Kettle Chips",
+      price: "$2.50",
       description: "Assorted grab-and-go chip flavors.",
       style: "Packaged side",
       options: "Select flavors available daily",
@@ -314,6 +397,7 @@ window.DEFAULT_MENU_DATA = {
     {
       id: "side-cookie",
       name: "Bakery Cookies",
+      price: "$2.50",
       description: "Large fresh-baked cookies near the register.",
       style: "Sweet extra",
       options: "Chocolate chip, sugar, or oatmeal raisin",
@@ -322,6 +406,7 @@ window.DEFAULT_MENU_DATA = {
     {
       id: "side-coleslaw",
       name: "Coleslaw",
+      price: "$3.99 /Lbs",
       description: "Creamy deli-style coleslaw served chilled.",
       style: "Classic side",
       options: "Small or regular",
@@ -330,6 +415,7 @@ window.DEFAULT_MENU_DATA = {
     {
       id: "side-macaroni-salad",
       name: "Macaroni Salad",
+      price: "$3.99 /Lbs",
       description: "Traditional macaroni salad with a creamy dressing.",
       style: "Chilled side",
       options: "Small or regular",
@@ -338,6 +424,7 @@ window.DEFAULT_MENU_DATA = {
     {
       id: "side-fruit-cup",
       name: "Fresh Fruit Cup",
+      price: "$2.50",
       description: "Seasonal mixed fruit ready to grab from the cooler.",
       style: "Fresh side",
       options: "Single cup",
@@ -346,6 +433,7 @@ window.DEFAULT_MENU_DATA = {
     {
       id: "side-pickle-spears",
       name: "Pickle Spears",
+      price: "$2.50",
       description: "Crisp dill pickle spears packed cold.",
       style: "Deli add-on",
       options: "Single or double spear",
@@ -354,6 +442,7 @@ window.DEFAULT_MENU_DATA = {
     {
       id: "side-brownie",
       name: "Fudge Brownie",
+      price: "$2.50",
       description: "Rich bakery brownie wrapped for grab-and-go.",
       style: "Sweet extra",
       options: "Single brownie",
@@ -362,6 +451,7 @@ window.DEFAULT_MENU_DATA = {
     {
       id: "side-kettle-corn",
       name: "Kettle Corn",
+      price: "$2.50",
       description: "Sweet and salty snack bag near checkout.",
       style: "Packaged snack",
       options: "Single bag",

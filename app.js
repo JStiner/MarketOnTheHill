@@ -1,6 +1,6 @@
 const STORAGE_KEY = "market-on-the-hill-menu-v2";
 const SETTINGS_HOLD_MS = 700;
-const SECTION_TYPES = ["sandwiches", "drinks", "soups", "sides"];
+const SECTION_TYPES = ["sandwiches", "drinks", "coffee", "soups", "sides"];
 
 const state = {
   data: loadData(),
@@ -34,26 +34,31 @@ const el = {
 
   showSandwichesToggle: document.getElementById("showSandwichesToggle"),
   showDrinksToggle: document.getElementById("showDrinksToggle"),
+  showCoffeeToggle: document.getElementById("showCoffeeToggle"),
   showSoupsToggle: document.getElementById("showSoupsToggle"),
   showSidesToggle: document.getElementById("showSidesToggle"),
 
   sandwichesItemsPerPageInput: document.getElementById("sandwichesItemsPerPageInput"),
   drinksItemsPerPageInput: document.getElementById("drinksItemsPerPageInput"),
+  coffeeItemsPerPageInput: document.getElementById("coffeeItemsPerPageInput"),
   soupsItemsPerPageInput: document.getElementById("soupsItemsPerPageInput"),
   sidesItemsPerPageInput: document.getElementById("sidesItemsPerPageInput"),
 
   sandwichesOrderInput: document.getElementById("sandwichesOrderInput"),
   drinksOrderInput: document.getElementById("drinksOrderInput"),
+  coffeeOrderInput: document.getElementById("coffeeOrderInput"),
   soupsOrderInput: document.getElementById("soupsOrderInput"),
   sidesOrderInput: document.getElementById("sidesOrderInput"),
 
   sandwichesColumnsInput: document.getElementById("sandwichesColumnsInput"),
   drinksColumnsInput: document.getElementById("drinksColumnsInput"),
+  coffeeColumnsInput: document.getElementById("coffeeColumnsInput"),
   soupsColumnsInput: document.getElementById("soupsColumnsInput"),
   sidesColumnsInput: document.getElementById("sidesColumnsInput"),
 
   sandwichesSecondsInput: document.getElementById("sandwichesSecondsInput"),
   drinksSecondsInput: document.getElementById("drinksSecondsInput"),
+  coffeeSecondsInput: document.getElementById("coffeeSecondsInput"),
   soupsSecondsInput: document.getElementById("soupsSecondsInput"),
   sidesSecondsInput: document.getElementById("sidesSecondsInput"),
 
@@ -89,11 +94,13 @@ const el = {
 
   sandwichesList: document.getElementById("sandwichesList"),
   drinksList: document.getElementById("drinksList"),
+  coffeeList: document.getElementById("coffeeList"),
   soupsList: document.getElementById("soupsList"),
   sidesList: document.getElementById("sidesList"),
 
   addSandwichBtn: document.getElementById("addSandwichBtn"),
   addDrinkBtn: document.getElementById("addDrinkBtn"),
+  addCoffeeBtn: document.getElementById("addCoffeeBtn"),
   addSoupBtn: document.getElementById("addSoupBtn"),
   addSideBtn: document.getElementById("addSideBtn"),
 
@@ -104,6 +111,7 @@ const el = {
   editorId: document.getElementById("editorId"),
   editorName: document.getElementById("editorName"),
   editorDescription: document.getElementById("editorDescription"),
+  editorPrice: document.getElementById("editorPrice"),
   editorStyle: document.getElementById("editorStyle"),
   editorOptions: document.getElementById("editorOptions"),
   editorAvailable: document.getElementById("editorAvailable"),
@@ -153,6 +161,7 @@ function bindEvents() {
   [
     [el.addSandwichBtn, "sandwiches"],
     [el.addDrinkBtn, "drinks"],
+    [el.addCoffeeBtn, "coffee"],
     [el.addSoupBtn, "soups"],
     [el.addSideBtn, "sides"]
   ].forEach(([button, type]) => button.addEventListener("click", () => openEditor(type)));
@@ -160,6 +169,7 @@ function bindEvents() {
   [
     [el.sandwichesList, "sandwiches"],
     [el.drinksList, "drinks"],
+    [el.coffeeList, "coffee"],
     [el.soupsList, "soups"],
     [el.sidesList, "sides"]
   ].forEach(([mount, type]) => {
@@ -222,26 +232,31 @@ function populateGeneralForm() {
 
   el.showSandwichesToggle.checked = !!g.showPages.sandwiches;
   el.showDrinksToggle.checked = !!g.showPages.drinks;
+  el.showCoffeeToggle.checked = !!g.showPages.coffee;
   el.showSoupsToggle.checked = !!g.showPages.soups;
   el.showSidesToggle.checked = !!g.showPages.sides;
 
   el.sandwichesItemsPerPageInput.value = sectionSettings.sandwiches.itemsPerPage;
   el.drinksItemsPerPageInput.value = sectionSettings.drinks.itemsPerPage;
+  el.coffeeItemsPerPageInput.value = sectionSettings.coffee.itemsPerPage;
   el.soupsItemsPerPageInput.value = sectionSettings.soups.itemsPerPage;
   el.sidesItemsPerPageInput.value = sectionSettings.sides.itemsPerPage;
 
   el.sandwichesOrderInput.value = sectionSettings.sandwiches.order;
   el.drinksOrderInput.value = sectionSettings.drinks.order;
+  el.coffeeOrderInput.value = sectionSettings.coffee.order;
   el.soupsOrderInput.value = sectionSettings.soups.order;
   el.sidesOrderInput.value = sectionSettings.sides.order;
 
   el.sandwichesColumnsInput.value = g.columns.sandwiches;
   el.drinksColumnsInput.value = g.columns.drinks;
+  el.coffeeColumnsInput.value = g.columns.coffee;
   el.soupsColumnsInput.value = g.columns.soups;
   el.sidesColumnsInput.value = g.columns.sides;
 
   el.sandwichesSecondsInput.value = g.sectionSeconds.sandwiches;
   el.drinksSecondsInput.value = g.sectionSeconds.drinks;
+  el.coffeeSecondsInput.value = g.sectionSeconds.coffee;
   el.soupsSecondsInput.value = g.sectionSeconds.soups;
   el.sidesSecondsInput.value = g.sectionSeconds.sides;
 
@@ -254,43 +269,50 @@ function saveGeneralSettings() {
     ...current,
     eyebrow: el.eyebrowInput.value.trim() || "Mt Pulaski, Illinois",
     brandTitle: el.brandTitleInput.value.trim() || "Market on the Hill",
-    brandTagline: el.brandTaglineInput.value.trim() || "Sandwiches, soups, drinks, and deli favorites",
+    brandTagline: el.brandTaglineInput.value.trim() || "Sandwiches, coffee, soups, drinks, and deli favorites",
     rotationSpeedSeconds: clampNumber(el.rotationSpeedInput.value, 5, 120, 12),
     autoRotate: !!el.autoRotateInput.checked,
     fontScale: ["small", "normal", "large"].includes(el.fontScaleInput.value) ? el.fontScaleInput.value : "normal",
     showPages: {
       sandwiches: !!el.showSandwichesToggle.checked,
       drinks: !!el.showDrinksToggle.checked,
+      coffee: !!el.showCoffeeToggle.checked,
       soups: !!el.showSoupsToggle.checked,
       sides: !!el.showSidesToggle.checked
     },
     sectionSettings: normalizeSectionSettings({
       sandwiches: {
         itemsPerPage: clampNumber(el.sandwichesItemsPerPageInput.value, 1, 18, 12),
-        order: clampNumber(el.sandwichesOrderInput.value, 1, 4, 1)
+        order: clampNumber(el.sandwichesOrderInput.value, 1, 5, 1)
       },
       drinks: {
         itemsPerPage: clampNumber(el.drinksItemsPerPageInput.value, 1, 18, 12),
-        order: clampNumber(el.drinksOrderInput.value, 1, 4, 2)
+        order: clampNumber(el.drinksOrderInput.value, 1, 5, 2)
+      },
+      coffee: {
+        itemsPerPage: clampNumber(el.coffeeItemsPerPageInput.value, 1, 18, 12),
+        order: clampNumber(el.coffeeOrderInput.value, 1, 5, 3)
       },
       soups: {
         itemsPerPage: clampNumber(el.soupsItemsPerPageInput.value, 1, 18, 12),
-        order: clampNumber(el.soupsOrderInput.value, 1, 4, 3)
+        order: clampNumber(el.soupsOrderInput.value, 1, 5, 4)
       },
       sides: {
         itemsPerPage: clampNumber(el.sidesItemsPerPageInput.value, 1, 18, 12),
-        order: clampNumber(el.sidesOrderInput.value, 1, 4, 4)
+        order: clampNumber(el.sidesOrderInput.value, 1, 5, 5)
       }
     }),
     columns: {
       sandwiches: clampColumnCount(el.sandwichesColumnsInput.value, current.columns.sandwiches),
       drinks: clampColumnCount(el.drinksColumnsInput.value, current.columns.drinks),
+      coffee: clampColumnCount(el.coffeeColumnsInput.value, current.columns.coffee),
       soups: clampColumnCount(el.soupsColumnsInput.value, current.columns.soups),
       sides: clampColumnCount(el.sidesColumnsInput.value, current.columns.sides)
     },
     sectionSeconds: {
       sandwiches: clampNumber(el.sandwichesSecondsInput.value, 5, 120, current.rotationSpeedSeconds),
       drinks: clampNumber(el.drinksSecondsInput.value, 5, 120, current.rotationSpeedSeconds),
+      coffee: clampNumber(el.coffeeSecondsInput.value, 5, 120, current.rotationSpeedSeconds),
       soups: clampNumber(el.soupsSecondsInput.value, 5, 120, current.rotationSpeedSeconds),
       sides: clampNumber(el.sidesSecondsInput.value, 5, 120, current.rotationSpeedSeconds)
     },
@@ -346,13 +368,25 @@ function getDisplaySections() {
       type: "drinks",
       kicker: "— DRINKS —",
       title: "Drinks",
-      subtitle: "Cold drinks, coffee, and grab-and-go favorites.",
+      subtitle: "Cold drinks and grab-and-go cooler favorites.",
       items: state.data.drinks.filter((item) => item.available !== false),
       itemsPerPage: sectionSettings.drinks.itemsPerPage,
       order: sectionSettings.drinks.order,
       columns: g.columns.drinks,
       seconds: g.sectionSeconds.drinks,
       visible: g.showPages.drinks
+    },
+    {
+      type: "coffee",
+      kicker: "— COFFEE —",
+      title: "Coffee",
+      subtitle: "Fresh brewed coffee and café favorites.",
+      items: state.data.coffee.filter((item) => item.available !== false),
+      itemsPerPage: sectionSettings.coffee.itemsPerPage,
+      order: sectionSettings.coffee.order,
+      columns: g.columns.coffee,
+      seconds: g.sectionSeconds.coffee,
+      visible: g.showPages.coffee
     },
     {
       type: "soups",
@@ -413,11 +447,15 @@ function renderDisplay() {
 
 function renderMenuCard(item) {
   const meta = buildMenuMeta(item);
+  const price = formatPrice(item.price);
   return `
     <article class="menu-item ${item.soldOut ? "sold-out" : ""}">
       ${item.soldOut ? '<div class="sold-out-badge">Sold Out</div>' : ""}
       <div>
-        <h3 class="menu-item-title">${escapeHtml(item.name)}</h3>
+        <div class="menu-item-heading">
+          <h3 class="menu-item-title">${escapeHtml(item.name)}</h3>
+          ${price ? `<div class="menu-item-price">${escapeHtml(price)}</div>` : ""}
+        </div>
         <div class="menu-item-copy">${escapeHtml(item.description || "")}</div>
       </div>
       ${meta ? `<div class="menu-item-meta">${meta}</div>` : ""}
@@ -499,6 +537,7 @@ function rotatePrev() {
 function renderAdminLists() {
   renderAdminList("sandwiches", el.sandwichesList, state.data.sandwiches);
   renderAdminList("drinks", el.drinksList, state.data.drinks);
+  renderAdminList("coffee", el.coffeeList, state.data.coffee);
   renderAdminList("soups", el.soupsList, state.data.soups);
   renderAdminList("sides", el.sidesList, state.data.sides);
 }
@@ -511,7 +550,10 @@ function renderAdminList(type, mount, items) {
       <article class="admin-row">
         <div class="admin-row-head">
           <div>
-            <h4>${escapeHtml(item.name)}</h4>
+            <div class="admin-item-title-row">
+              <h4>${escapeHtml(item.name)}</h4>
+              ${item.price ? `<span class="admin-item-price">${escapeHtml(formatPrice(item.price))}</span>` : ""}
+            </div>
             <p>${escapeHtml(item.description || "")}</p>
             <p class="admin-meta">${escapeHtml([item.style, item.options].filter(Boolean).join(" • "))}</p>
           </div>
@@ -550,13 +592,14 @@ function openEditor(type, id = "") {
   const source = state.data[type];
   const isNew = !id;
   const item = isNew
-    ? { id: "", name: "", description: "", style: "", options: "", available: true, soldOut: false }
+    ? { id: "", name: "", price: "", description: "", style: "", options: "", available: true, soldOut: false }
     : source.find((entry) => entry.id === id);
 
   el.editorType.value = type;
   el.editorId.value = item?.id || "";
   el.editorName.value = item?.name || "";
   el.editorDescription.value = item?.description || "";
+  el.editorPrice.value = item?.price || "";
   el.editorStyle.value = item?.style || "";
   el.editorOptions.value = item?.options || "";
   el.editorAvailable.checked = item?.available !== false;
@@ -579,6 +622,7 @@ function saveEditorForm(event) {
     id: id || uid(type),
     name: el.editorName.value.trim(),
     description: el.editorDescription.value.trim(),
+    price: el.editorPrice.value.trim(),
     style: el.editorStyle.value.trim(),
     options: el.editorOptions.value.trim(),
     available: !!el.editorAvailable.checked,
@@ -645,6 +689,7 @@ function mergeDefaults(data, defaults) {
     }),
     sandwiches: normalizeItemsArray(data.sandwiches, defaults.sandwiches),
     drinks: normalizeItemsArray(data.drinks, defaults.drinks),
+    coffee: normalizeItemsArray(data.coffee, defaults.coffee),
     soups: normalizeItemsArray(data.soups, defaults.soups),
     sides: normalizeItemsArray(data.sides, defaults.sides)
   };
@@ -686,6 +731,7 @@ function normalizeItemsArray(items, fallback) {
   const source = Array.isArray(items) ? items : clone(fallback);
   return source.map((item) => ({
     ...item,
+    price: item?.price ? String(item.price).trim() : "",
     available: item.available !== false,
     soldOut: !!item.soldOut
   }));
@@ -699,7 +745,7 @@ function normalizeSectionSettings(sectionSettings) {
     const fallback = defaults[type] || { itemsPerPage: 12, order: index + 1 };
     normalized[type] = {
       itemsPerPage: clampNumber(incoming.itemsPerPage, 1, 18, fallback.itemsPerPage),
-      order: clampNumber(incoming.order, 1, 4, fallback.order)
+      order: clampNumber(incoming.order, 1, 5, fallback.order)
     };
   });
   return normalized;
@@ -790,7 +836,7 @@ function capitalize(value) {
 }
 
 function labelForType(type) {
-  return ({ sandwiches: "Sandwiches", drinks: "Drinks", soups: "Soups", sides: "Sides" })[type] || type;
+  return ({ sandwiches: "Sandwiches", drinks: "Drinks", coffee: "Coffee", soups: "Soups", sides: "Sides" })[type] || type;
 }
 
 function uid(prefix) {
@@ -812,6 +858,10 @@ function clampNumber(value, min, max, fallback) {
 function clampColumnCount(value, fallback) {
   const num = Number(value);
   return num === 4 ? 4 : num === 3 ? 3 : fallback || 3;
+}
+
+function formatPrice(value) {
+  return String(value ?? "").trim();
 }
 
 function escapeHtml(value) {
