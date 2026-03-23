@@ -2,7 +2,7 @@ window.DEFAULT_MENU_DATA = {
   general: {
     eyebrow: "Mt Pulaski, Illinois",
     brandTitle: "Market on the Hill",
-    brandTagline: "Coffee & Deli",
+    brandTagline: "Sandwiches, soups, drinks, coffee, and other deli favorites",
     rotationSpeedSeconds: 12,
     autoRotate: true,
     fontScale: "normal",
