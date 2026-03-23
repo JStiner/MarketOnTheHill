@@ -314,7 +314,7 @@ window.DEFAULT_MENU_DATA = {
     },
     {
       id: "soup-loaded-potato",
-      name: "Hearty soup",
+      name: "Loaded Baked Potato",
       price: "$6.99",
       description: "Loaded potato soup appears in Market on the Hill's published specials and social posts.",
       style: "Frequent special",
