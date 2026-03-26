@@ -1,4 +1,10 @@
 window.DEFAULT_MENU_DATA = {
+  support: {
+    settingsPin: '1738',
+    supportEmail: 'jason.stiner@gmail.com',
+    defaultClientEmail: '',
+    formspreeEndpoint: ''
+  },
   general: {
     eyebrow: "Mt Pulaski, Illinois",
     brandTitle: "Market on the Hill",
@@ -6,6 +12,7 @@ window.DEFAULT_MENU_DATA = {
     rotationSpeedSeconds: 12,
     autoRotate: true,
     fontScale: "normal",
+    hideSectionControls: false,
     showPages: {
       sandwiches: true,
       drinks: true,
@@ -43,6 +50,14 @@ window.DEFAULT_MENU_DATA = {
       soups: { itemsPerPage: 18, order: 4 },
       sides: { itemsPerPage: 18, order: 5 }
     }
+  },
+
+  sectionMeta: {
+    sandwiches: { title: 'Sandwiches', subtitle: 'Fresh deli sandwiches and house favorites.' },
+    drinks: { title: 'Drinks', subtitle: 'Sodas, refreshers, teas, and bottled favorites.' },
+    coffee: { title: 'Coffee', subtitle: 'Hot and iced coffee drinks, espresso, and café staples.' },
+    soups: { title: 'Soups', subtitle: 'Daily soups and warm comfort bowls.' },
+    sides: { title: 'Sides', subtitle: 'Chips, salads, sweets, and deli add-ons.' }
   },
 
   sandwiches: [

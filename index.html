@@ -1,353 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Market on the Hill display menu demo" />
-  <title>Market on the Hill Menu</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
+<html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Market on the Hill Menu</title><link rel="stylesheet" href="styles.css"/></head>
 <body>
-  <button id="settingsHotspot" class="settings-hotspot" aria-label="Open settings" title="Press and hold for settings"></button>
-
-  <div class="screen-shell">
-    <header class="brand-header">
-      <div class="brand-center brand-center-market">
-        <img
-          src="/MarketOnTheHill/assets/market-on-the-hill-logo.png?v=1"
-          alt="Market on the Hill logo"
-          class="brand-logo"
-        />
-        <div class="brand-copy">
-          <div class="eyebrow" id="eyebrowText">Mt Pulaski, Illinois</div>
-          <h1 id="brandTitle">Market on the Hill</h1>
-          <p id="brandTagline">Sandwiches, soups, drinks, and deli favorites</p>
-        </div>
-      </div>
-
-      <div class="header-hours" id="headerHours" aria-label="Store hours"></div>
-    </header>
-
-    <main class="display-main">
-      <section class="section-stage">
-        <div class="section-meta">
-          <span class="section-kicker" id="sectionKicker">— SANDWICHES —</span>
-        </div>
-
-        <div class="hero-copy">
-          <h2 id="sectionTitle">Sandwiches</h2>
-          <p id="sectionSubtitle">Fresh deli sandwiches and house favorites.</p>
-        </div>
-
-        <div id="menuList" class="menu-list" aria-live="polite"></div>
-      </section>
-
-      <div id="navLeft" class="nav-zone left" aria-label="Previous section"></div>
-      <div id="navRight" class="nav-zone right" aria-label="Next section"></div>
-    </main>
-  </div>
-
-  <div id="settingsModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
-    <div class="modal-card settings-card">
-      <div class="modal-header">
-        <div>
-          <p class="modal-kicker">Admin</p>
-          <h2 id="settingsTitle">Settings</h2>
-          <p class="modal-subtitle">Local device settings for the market display.</p>
-        </div>
-        <button id="closeSettings" class="btn btn-ghost" type="button">Close</button>
-      </div>
-
-      <nav class="tabs" id="settingsTabs" aria-label="Settings sections">
-        <button class="tab-btn active" data-tab="general" type="button">General</button>
-        <button class="tab-btn" data-tab="sandwiches" type="button">Sandwiches</button>
-        <button class="tab-btn" data-tab="drinks" type="button">Drinks</button>
-        <button class="tab-btn" data-tab="coffee" type="button">Coffee</button>
-        <button class="tab-btn" data-tab="soups" type="button">Soups</button>
-        <button class="tab-btn" data-tab="sides" type="button">Sides</button>
-      </nav>
-
-      <div class="tab-panels">
-        <section class="tab-panel active" data-panel="general">
-          <div class="panel-grid">
-            <label>
-              <span>Location / eyebrow text</span>
-              <input id="eyebrowInput" type="text" />
-            </label>
-            <label>
-              <span>Brand title</span>
-              <input id="brandTitleInput" type="text" />
-            </label>
-            <label class="full-width">
-              <span>Tagline</span>
-              <input id="brandTaglineInput" type="text" />
-            </label>
-            <label>
-              <span>Default rotation speed (seconds)</span>
-              <input id="rotationSpeedInput" type="number" min="5" max="120" step="1" />
-            </label>
-            <label class="settings-field">
-              <span>Auto rotate</span>
-              <input id="autoRotateInput" type="checkbox" />
-            </label>
-            <label>
-              <span>Word size</span>
-              <select id="fontScaleInput">
-                <option value="small">Smaller</option>
-                <option value="normal">Default</option>
-                <option value="large">Larger</option>
-              </select>
-            </label>
-          </div>
-
-          <div class="switch-block">
-            <h3>Section display settings</h3>
-            <p class="settings-note">Recommended maximum: 12 items per panel.</p>
-
-            <div class="section-settings-grid section-settings-grid-merged">
-              <div class="section-settings-head">Section</div>
-              <div class="section-settings-head">Show</div>
-              <div class="section-settings-head">Items</div>
-              <div class="section-settings-head">Order</div>
-              <div class="section-settings-head">Cols</div>
-              <div class="section-settings-head">Seconds</div>
-
-              <div class="section-settings-label">Sandwiches</div>
-              <div><input id="showSandwichesToggle" type="checkbox" /></div>
-              <div><input id="sandwichesItemsPerPageInput" type="number" min="1" max="18" step="1" /></div>
-              <div><input id="sandwichesOrderInput" type="number" min="1" max="5" step="1" /></div>
-              <div>
-                <select id="sandwichesColumnsInput">
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                </select>
-              </div>
-              <div><input id="sandwichesSecondsInput" type="number" min="5" max="120" step="1" /></div>
-
-              <div class="section-settings-label">Drinks</div>
-              <div><input id="showDrinksToggle" type="checkbox" /></div>
-              <div><input id="drinksItemsPerPageInput" type="number" min="1" max="18" step="1" /></div>
-              <div><input id="drinksOrderInput" type="number" min="1" max="5" step="1" /></div>
-              <div>
-                <select id="drinksColumnsInput">
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                </select>
-              </div>
-              <div><input id="drinksSecondsInput" type="number" min="5" max="120" step="1" /></div>
-
-              <div class="section-settings-label">Coffee</div>
-              <div><input id="showCoffeeToggle" type="checkbox" /></div>
-              <div><input id="coffeeItemsPerPageInput" type="number" min="1" max="18" step="1" /></div>
-              <div><input id="coffeeOrderInput" type="number" min="1" max="5" step="1" /></div>
-              <div>
-                <select id="coffeeColumnsInput">
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                </select>
-              </div>
-              <div><input id="coffeeSecondsInput" type="number" min="5" max="120" step="1" /></div>
-
-              <div class="section-settings-label">Soups</div>
-              <div><input id="showSoupsToggle" type="checkbox" /></div>
-              <div><input id="soupsItemsPerPageInput" type="number" min="1" max="18" step="1" /></div>
-              <div><input id="soupsOrderInput" type="number" min="1" max="5" step="1" /></div>
-              <div>
-                <select id="soupsColumnsInput">
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                </select>
-              </div>
-              <div><input id="soupsSecondsInput" type="number" min="5" max="120" step="1" /></div>
-
-              <div class="section-settings-label">Sides</div>
-              <div><input id="showSidesToggle" type="checkbox" /></div>
-              <div><input id="sidesItemsPerPageInput" type="number" min="1" max="18" step="1" /></div>
-              <div><input id="sidesOrderInput" type="number" min="1" max="5" step="1" /></div>
-              <div>
-                <select id="sidesColumnsInput">
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                </select>
-              </div>
-              <div><input id="sidesSecondsInput" type="number" min="5" max="120" step="1" /></div>
-            </div>
-          </div>
-
-          <div class="hours-block">
-            <h3>Hours open</h3>
-            <div class="hours-settings-grid">
-              <div class="hours-settings-column">
-                <div class="hours-settings-column-title">Hours Open</div>
-
-                <div class="hours-row">
-                  <label class="hours-day"><input id="hoursMondayEnabled" type="checkbox" /> <span>Monday</span></label>
-                  <input id="hoursMondayOpen" type="time" />
-                  <input id="hoursMondayClose" type="time" />
-                </div>
-                <div class="hours-row">
-                  <label class="hours-day"><input id="hoursTuesdayEnabled" type="checkbox" /> <span>Tuesday</span></label>
-                  <input id="hoursTuesdayOpen" type="time" />
-                  <input id="hoursTuesdayClose" type="time" />
-                </div>
-                <div class="hours-row">
-                  <label class="hours-day"><input id="hoursWednesdayEnabled" type="checkbox" /> <span>Wednesday</span></label>
-                  <input id="hoursWednesdayOpen" type="time" />
-                  <input id="hoursWednesdayClose" type="time" />
-                </div>
-                <div class="hours-row">
-                  <label class="hours-day"><input id="hoursThursdayEnabled" type="checkbox" /> <span>Thursday</span></label>
-                  <input id="hoursThursdayOpen" type="time" />
-                  <input id="hoursThursdayClose" type="time" />
-                </div>
-              </div>
-
-              <div class="hours-settings-column">
-                <div class="hours-settings-column-title hours-settings-column-title-empty">&nbsp;</div>
-
-                <div class="hours-row">
-                  <label class="hours-day"><input id="hoursFridayEnabled" type="checkbox" /> <span>Friday</span></label>
-                  <input id="hoursFridayOpen" type="time" />
-                  <input id="hoursFridayClose" type="time" />
-                </div>
-                <div class="hours-row">
-                  <label class="hours-day"><input id="hoursSaturdayEnabled" type="checkbox" /> <span>Saturday</span></label>
-                  <input id="hoursSaturdayOpen" type="time" />
-                  <input id="hoursSaturdayClose" type="time" />
-                </div>
-                <div class="hours-row">
-                  <label class="hours-day"><input id="hoursSundayEnabled" type="checkbox" /> <span>Sunday</span></label>
-                  <input id="hoursSundayOpen" type="time" />
-                  <input id="hoursSundayClose" type="time" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="action-row">
-            <button id="saveGeneral" class="btn btn-primary" type="button">Save general settings</button>
-            <button id="resetDefaults" class="btn btn-danger" type="button">Reset to defaults</button>
-          </div>
-        </section>
-
-        <section class="tab-panel" data-panel="sandwiches">
-          <div class="panel-head">
-            <h3>Sandwiches</h3>
-            <button id="addSandwichBtn" class="btn btn-primary" type="button">Add item</button>
-          </div>
-          <div id="sandwichesList" class="admin-list"></div>
-        </section>
-
-        <section class="tab-panel" data-panel="drinks">
-          <div class="panel-head">
-            <h3>Drinks</h3>
-            <button id="addDrinkBtn" class="btn btn-primary" type="button">Add item</button>
-          </div>
-          <div id="drinksList" class="admin-list"></div>
-        </section>
-
-        <section class="tab-panel" data-panel="coffee">
-          <div class="panel-head">
-            <h3>Coffee</h3>
-            <button id="addCoffeeBtn" class="btn btn-primary" type="button">Add item</button>
-          </div>
-          <div id="coffeeList" class="admin-list"></div>
-        </section>
-
-        <section class="tab-panel" data-panel="soups">
-          <div class="panel-head">
-            <h3>Soups</h3>
-            <button id="addSoupBtn" class="btn btn-primary" type="button">Add item</button>
-          </div>
-          <div id="soupsList" class="admin-list"></div>
-        </section>
-
-        <section class="tab-panel" data-panel="sides">
-          <div class="panel-head">
-            <h3>Sides</h3>
-            <button id="addSideBtn" class="btn btn-primary" type="button">Add item</button>
-          </div>
-          <div id="sidesList" class="admin-list"></div>
-        </section>
-      </div>
+<div class="settings-hotspot" id="settingsHotspot" aria-hidden="true"></div>
+<div class="screen-shell">
+<header class="brand-header">
+  <div class="brand-center">
+    <div class="brand-logo-wrap">
+      <img src="assets/market-on-the-hill-logo.png" alt="Market on the Hill logo" class="brand-logo"
+           onerror="this.onerror=null;this.src='assets/market-on-the-hill-logo.png';"/>
+    </div>
+    <div class="brand-copy">
+      <div class="eyebrow" id="eyebrowText">Mt Pulaski, Illinois</div>
+      <h1 id="brandTitle">Market on the Hill</h1>
+      <p id="brandTagline">Sandwiches, soups, drinks, coffee, and other deli favorites</p>
     </div>
   </div>
+  <div class="header-hours" id="headerHours"></div>
+</header>
 
-  <div id="editorModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
-    <div class="modal-card narrow">
-      <div class="modal-header">
-        <div>
-          <p class="modal-kicker">Edit</p>
-          <h2 id="editorTitle">Edit item</h2>
-          <p id="editorSubtitle" class="modal-subtitle">Update menu content</p>
-        </div>
-        <button id="closeEditor" class="btn btn-ghost" type="button">Close</button>
-      </div>
-
-      <form id="editorForm" class="editor-form">
-        <input id="editorType" type="hidden" />
-        <input id="editorId" type="hidden" />
-
-        <label>
-          <span>Name</span>
-          <input id="editorName" type="text" required />
-        </label>
-
-        <label>
-          <span>Description / what’s on it</span>
-          <textarea id="editorDescription" rows="4"></textarea>
-        </label>
-
-        <label>
-          <span>Price</span>
-          <input id="editorPrice" type="text" placeholder="$5.99 or Cup $4.99 / Bowl $6.99" />
-        </label>
-
-        <label>
-          <span>Style / category</span>
-          <input id="editorStyle" type="text" />
-        </label>
-
-        <label>
-          <span>Bread / options / extras</span>
-          <input id="editorOptions" type="text" />
-        </label>
-
-        <label class="switch-row">
-          <span>Show on menu</span>
-          <input id="editorAvailable" type="checkbox" />
-        </label>
-
-        <label class="switch-row">
-          <span>Sold out</span>
-          <input id="editorSoldOut" type="checkbox" />
-        </label>
-
-        <div class="action-row">
-          <button type="submit" class="btn btn-primary">Save item</button>
-          <button id="deleteItemBtn" type="button" class="btn btn-danger hidden">Delete item</button>
-        </div>
-      </form>
-    </div>
+<div class="display-main">
+<section class="section-stage">
+  <div class="display-controls">
+    <button class="display-nav" id="navLeft" aria-label="Previous section">&#10094;</button>
+    <div class="section-buttons" id="sectionButtons"></div>
+    <button class="display-nav" id="navRight" aria-label="Next section">&#10095;</button>
+    
   </div>
-
-  <div id="confirmModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
-    <div class="modal-card narrow">
-      <div class="modal-header">
-        <div>
-          <p class="modal-kicker">Warning</p>
-          <h2 id="confirmTitle">Reset to defaults?</h2>
-          <p class="modal-subtitle">This will erase all local changes on this device.</p>
-        </div>
-      </div>
-      <div class="action-row">
-        <button id="cancelReset" class="btn btn-ghost" type="button">Cancel</button>
-        <button id="confirmReset" class="btn btn-danger" type="button">Reset</button>
-      </div>
-    </div>
+  <div class="section-meta"><div class="section-kicker" id="sectionKicker">Section</div></div>
+  <div class="hero-copy">
+    <h2 id="sectionTitle">Starters</h2>
+    <p id="sectionSubtitle">Appetizers, shareables, and first-round favorites.</p>
   </div>
+  <div class="menu-list layout-cards layout-3" id="menuList"></div>
+</section>
+</div></div>
 
-  <script src="default-data.js"></script>
-  <script src="app.js"></script>
-</body>
-</html>
+<div class="modal-backdrop hidden" id="settingsModal"><div class="modal settings-modal">
+  <div class="modal-header"><div><h3>Menu Settings</h3><p>Press and hold the top-right corner to open settings.</p></div><button class="icon-btn" id="closeSettings">&times;</button></div>
+  <div class="settings-tabs">
+    <button class="tab-btn active" data-tab="general">General</button>
+    <button class="tab-btn" data-tab="hours">Hours</button>
+    <button class="tab-btn" data-tab="sections">Sections</button>
+    <button class="tab-btn" data-tab="items">Items</button>
+    <button class="tab-btn" data-tab="support">Support</button>
+  </div>
+  <div class="settings-panels">
+    <section class="settings-panel" data-panel="general">
+      <div class="form-grid two">
+        <label><span>Eyebrow</span><input id="eyebrowInput" type="text"/></label>
+        <label><span>Brand title</span><input id="brandTitleInput" type="text"/></label>
+        <label class="full"><span>Brand tagline</span><input id="brandTaglineInput" type="text"/></label>
+        <label><span>Default rotation seconds</span><input id="rotationSpeedInput" type="number" min="5" max="120" step="1"/></label>
+        <label class="checkbox-row"><input id="autoRotateInput" type="checkbox"/><span>Enable auto rotate</span></label>
+        <label class="checkbox-row"><input id="hideSectionControlsInput" type="checkbox"/><span>Hide section select and arrows</span></label>
+        <label><span>Font scale</span><select id="fontScaleInput"><option value="small">Small</option><option value="normal">Normal</option><option value="large">Large</option></select></label>
+      </div>
+      <div class="modal-actions"><button class="primary-btn" id="saveGeneral">Save General Settings</button><button class="secondary-btn" id="resetDefaults">Reset to Defaults</button></div>
+    </section>
+    <section class="settings-panel hidden" data-panel="hours"><div class="hours-editor-grid" id="hoursEditorGrid"></div><div class="modal-actions"><button class="primary-btn" id="saveHours">Save Hours</button></div></section>
+    <section class="settings-panel hidden" data-panel="sections"><div class="section-settings-grid" id="sectionSettingsGrid"></div><div class="modal-actions"><button class="primary-btn" id="saveSections">Save Section Settings</button></div></section>
+    <section class="settings-panel hidden" data-panel="items"><div class="items-toolbar"><select id="itemsSectionSelect"></select><button class="primary-btn" id="addItemBtn">Add Item</button></div><div class="item-admin-list" id="itemAdminList"></div></section>
+    <section class="settings-panel hidden" data-panel="support">
+      <div class="form-grid two">
+        <label><span>Business / Location</span><input id="supportBusinessInput" type="text" placeholder="Chubby's Bar & Grill"/></label>
+        <label><span>Client Email</span><input id="supportReplyInput" type="email" placeholder="client@example.com"/></label>
+        <label class="full"><span>Message to Support</span><textarea id="supportMessageInput" rows="5" placeholder="Tell support what changed or what help you need."></textarea></label>
+      </div>
+      <div class="support-note">Submitting sends your current branding, hours, section settings, and menu items directly to support.</div>
+      <div class="modal-actions"><button class="primary-btn" id="submitSupportBtn">Submit to Support</button></div>
+    </section>
+  </div>
+</div></div>
+
+
+<div class="modal-backdrop hidden" id="pinModal"><div class="modal confirm-modal">
+<div class="modal-header"><div><h3>Enter Settings PIN</h3><p>Enter the 4-digit PIN to open settings.</p></div><button class="icon-btn" id="closePin">&times;</button></div>
+<form id="pinForm" class="pin-form">
+<div class="form-grid">
+<label><span>PIN</span><input id="pinInput" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="1234"/></label>
+<div class="pin-error hidden" id="pinError">Incorrect PIN.</div>
+</div>
+<div class="modal-actions"><button type="submit" class="primary-btn">Unlock Settings</button></div>
+</form></div></div>
+
+<div class="modal-backdrop hidden" id="supportSuccessModal"><div class="modal confirm-modal">
+<div class="modal-header"><div><h3>Submitted to Support</h3><p>Your settings were submitted to support.</p></div></div>
+<div class="modal-actions"><button class="primary-btn" id="closeSupportSuccess">OK</button></div>
+</div></div>
+<div class="modal-backdrop hidden" id="editorModal"><div class="modal editor-modal">
+<div class="modal-header"><div><h3>Edit Menu Item</h3><p>Update item details, price, and sold out status.</p></div><button class="icon-btn" id="closeEditor">&times;</button></div>
+<form id="editorForm" class="editor-form">
+<input type="hidden" id="editorSection"/><input type="hidden" id="editorId"/>
+<div class="form-grid two">
+<label><span>Name</span><input id="editorName" type="text" required/></label>
+<label><span>Price</span><input id="editorPrice" type="text" placeholder="$12.99"/></label>
+<label class="full"><span>Description</span><textarea id="editorDescription" rows="3"></textarea></label>
+<label><span>Style / tag</span><input id="editorStyle" type="text" placeholder="Popular"/></label>
+<label><span>Options</span><input id="editorOptions" type="text" placeholder="Add fries +2.50"/></label>
+<label class="checkbox-row"><input id="editorAvailable" type="checkbox"/><span>Available</span></label>
+<label class="checkbox-row"><input id="editorSoldOut" type="checkbox"/><span>Sold out</span></label>
+<label class="checkbox-row"><input id="editorFeatured" type="checkbox"/><span>Featured</span></label>
+</div>
+<div class="modal-actions"><button type="submit" class="primary-btn">Save Item</button><button type="button" class="secondary-btn" id="deleteItemBtn">Delete Item</button></div>
+</form></div></div>
+
+<div class="modal-backdrop hidden" id="confirmModal"><div class="modal confirm-modal">
+<div class="modal-header"><div><h3>Reset to Defaults</h3><p>This will remove local changes and restore the packaged defaults.</p></div></div>
+<div class="modal-actions"><button class="secondary-btn" id="cancelReset">Cancel</button><button class="primary-btn" id="confirmReset">Reset</button></div>
+</div></div>
+
+<script src="default-data.js"></script><script src="app.js"></script>
+</body></html>
